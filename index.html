@@ -222,7 +222,7 @@
             padding: 4px 6px;
             font-size: 0.85rem;
             text-align: center;
-            width: 75px;
+            width: 95px;
         }
 
         .result-box {
@@ -302,7 +302,6 @@
                         <tr>
                             <th>商品名稱</th>
                             <th>PNIX 買進價</th>
-                            <th>遊戲販售價(鑽)</th>
                             <th>交易所購入價(鑽)</th>
                             <th>PNIX 賣出價</th>
                         </tr>
@@ -560,15 +559,15 @@
 
 <script>
     const itemsData = [
-        { id: "TEAR", name: "TEAR 冰凍之淚", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp", defaultBuy: 0.04, defaultSell: 8.0, defaultBuy2: 1.8, defaultPnix: 0.1 },
-        { id: "MORION", name: "MORION 墨水晶", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-morion.webp", defaultBuy: 0.04, defaultSell: 8.0, defaultBuy2: 1.57, defaultPnix: 0.1 },
-        { id: "ESSENCE", name: "ESSENCE 詛咒精華", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-essence.webp", defaultBuy: 0.04, defaultSell: 8.0, defaultBuy2: 1.8, defaultPnix: 0.1 },
-        { id: "PAPYRUS", name: "PAPYRUS 古代沙草紙", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-papyrus.webp", defaultBuy: 0.04, defaultSell: 8.0, defaultBuy2: 1.8, defaultPnix: 0.1 },
-        { id: "ALLOY", name: "ALLOY 古代匠人的合金", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-alloy.webp", defaultBuy: 0.04, defaultSell: 8.0, defaultBuy2: 1.8, defaultPnix: 0.1 },
-        { id: "FEATHER", name: "FEATHER 蒼天碎片", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-feather.webp", defaultBuy: 0.04, defaultSell: 8.0, defaultBuy2: 1.8, defaultPnix: 0.1 },
-        { id: "PROMOTE", name: "PROMOTE 優級轉職信物", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-promote.webp", defaultBuy: 0.04, defaultSell: 8.0, defaultBuy2: 1.8, defaultPnix: 0.1 },
-        { id: "GEAR", name: "GEAR 超精密飛行零件", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-gear.webp", defaultBuy: 0.04, defaultSell: 8.0, defaultBuy2: 1.8, defaultPnix: 0.1 },
-        { id: "RAVN", name: "RAVN RAVIUM", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-ravn.webp", defaultBuy: 0.04, defaultSell: 8.0, defaultSell2: 1.8, defaultPnix: 0.1 }
+        { id: "TEAR", name: "TEAR 冰凍之淚", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 },
+        { id: "MORION", name: "MORION 墨水晶", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-morion.webp", defaultBuy: 0.04, defaultBuy2: 1.57, defaultPnix: 0.1 },
+        { id: "ESSENCE", name: "ESSENCE 詛咒精華", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-essence.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 },
+        { id: "PAPYRUS", name: "PAPYRUS 古代沙草紙", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-papyrus.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 },
+        { id: "ALLOY", name: "ALLOY 古代匠人的合金", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-alloy.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 },
+        { id: "FEATHER", name: "FEATHER 蒼天碎片", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-feather.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 },
+        { id: "PROMOTE", name: "PROMOTE 優級轉職信物", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-promote.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 },
+        { id: "GEAR", name: "GEAR 超精密飛行零件", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-gear.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 },
+        { id: "RAVN", name: "RAVN RAVIUM", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-ravn.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 }
     ];
 
     function initUI() {
@@ -580,7 +579,6 @@
             tr.innerHTML = `
                 <td><img src="${item.icon}" class="table-icon"><span>${item.name}</span></td>
                 <td><input type="number" id="p_buy_${item.id}" value="${item.defaultBuy}" step="0.001" oninput="calculate()"></td>
-                <td><input type="number" id="p_sell_${item.id}" value="${item.defaultSell}" step="0.1" oninput="calculate()"></td>
                 <td><input type="number" id="p_buy2_${item.id}" value="${item.defaultBuy2}" step="0.01" oninput="calculate()"></td>
                 <td><input type="number" id="p_pnix_${item.id}" value="${item.defaultPnix}" step="0.001" oninput="calculate()"></td>
             `;
@@ -630,11 +628,9 @@
             if (p) document.getElementById('s1-price').value = p.value;
             document.getElementById('s2-item').value = item;
             updateStepIcon(2);
-            // 墨水晶預設倍率 10，其餘 1
             document.getElementById('s2-ratio').value = (item === 'MORION') ? 10 : 1;
         } else if (step === 3) {
-            const p = document.getElementById(`p_sell_${item}`);
-            if (p) document.getElementById('s3-price').value = p.value;
+            // 步驟3 (遊戲販售價) 可直接對應表格中的「交易所購入價欄位」或維持原樣
         } else if (step === 4) {
             const p = document.getElementById(`p_buy2_${item}`);
             if (p) document.getElementById('s4-price').value = p.value;
@@ -667,7 +663,7 @@
                 const sellItem = sellObj.id;
 
                 const buyP = parseFloat(document.getElementById(`p_buy_${buyItem}`).value) || 0.04;
-                const sellP = parseFloat(document.getElementById(`p_sell_${buyItem}`).value) || 8.0;
+                const sellP = parseFloat(document.getElementById(`p_buy2_${buyItem}`).value) || 8.0; // 步驟3的販售價參照表格價
                 const buy2P = parseFloat(document.getElementById(`p_buy2_${sellItem}`).value) || 1.8;
                 const pnixP = parseFloat(document.getElementById(`p_pnix_${sellItem}`).value) || 0.1;
                 
@@ -675,7 +671,6 @@
                 if (qty <= 0) return;
                 const cost = buyP * qty * (1 + takerFee);
                 
-                // 步驟2轉換 (墨水晶乘10，其餘乘1)
                 const s2Multiplier = (buyItem === 'MORION') ? 10 : 1;
                 const amountAfterS2 = qty * s2Multiplier;
 
@@ -698,7 +693,11 @@
             document.getElementById('s2-item').value = bestConfig.buyItem;
             document.getElementById('s3-item').value = bestConfig.buyItem;
             onStepItemChange(1);
-            onStepItemChange(3);
+            
+            // 自動同步步驟 3 販售價
+            const s3PInput = document.getElementById(`p_buy2_${bestConfig.buyItem}`);
+            if (s3PInput) document.getElementById('s3-price').value = s3PInput.value;
+
             document.getElementById('s1-qty').value = bestConfig.qty;
             document.getElementById('s2-ratio').value = (bestConfig.buyItem === 'MORION') ? 10 : 1;
 
@@ -736,7 +735,7 @@
         const s1BuyFeeOnly = s1Price * s1Qty * s1FeeRate;
         document.getElementById('s1-sub').innerText = `花費: ${totalCostCrow.toFixed(3)} CROW (含手續費 ${s1BuyFeeOnly.toFixed(3)})`;
 
-        // 步驟 2：轉換 1 (改為相乘倍率：1個代幣換幾顆道具)
+        // 步驟 2：轉換 1
         const s2Ratio = parseFloat(document.getElementById('s2-ratio').value) || 1;
         let amountAfterS2 = Math.floor(s1Qty * s2Ratio);
         document.getElementById('s2-sub').innerText = `轉換產出: ${amountAfterS2} 個`;
