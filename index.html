@@ -176,6 +176,30 @@
             gap: 6px;
         }
 
+        .market-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        .market-table th, .market-table td {
+            border: 1px solid var(--card-border);
+            padding: 6px 8px;
+            text-align: center;
+        }
+
+        .market-table th {
+            background-color: #0b1017;
+            color: var(--accent-glow);
+        }
+
+        .market-table input {
+            padding: 4px 6px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
         .result-box {
             background: linear-gradient(135deg, #1b263b 0%, #111827 100%);
             border: 1px solid #334155;
@@ -233,19 +257,58 @@
 
     <!-- 💡 智慧資產與行情看板 -->
     <div class="card recommend-box">
-        <h3>💡 資產與套利行情雷達</h3>
+        <h3>💡 資產與市場行情雷達</h3>
         <div class="form-row">
             <div class="form-group">
                 <label>目前可用 CROW 資本</label>
-                <input type="number" id="user-crow-budget" value="5.0" step="0.1" placeholder="輸入 CROW 預算" oninput="autoSuggest()">
+                <input type="number" id="user-crow-budget" value="10.4" step="0.1" placeholder="輸入 CROW 預算" oninput="calculate()">
             </div>
             <div class="form-group">
-                <label>目標：智慧推薦最佳套利商品</label>
-                <button type="button" onclick="autoSuggest()" style="background:var(--accent-glow); color:#000; font-weight:bold; border:none; border-radius:8px; padding:10px; cursor:pointer;">⚡ 一鍵分析最佳賺錢組合</button>
+                <label>目標：智慧推薦最佳套利</label>
+                <button type="button" onclick="autoSuggestBest()" style="background:var(--accent-glow); color:#000; font-weight:bold; border:none; border-radius:8px; padding:10px; cursor:pointer;">⚡ 一鍵分析最佳賺錢組合</button>
             </div>
         </div>
-        <div id="recommend-result" style="font-size: 0.85rem; color: #cbd5e1; margin-top: 8px;">
-            點擊上方按鈕或調整設定，系統將自動為您評估目前最賺錢的商品路徑！
+
+        <div style="margin-top: 12px;">
+            <label style="margin-bottom: 6px;">🛒 交易所與 PNIX 行情價格表 (可自行填寫最新價格)</label>
+            <table class="market-table">
+                <thead>
+                    <tr>
+                        <th>商品</th>
+                        <th>PNIX 買進價</th>
+                        <th>遊戲販售價(鑽)</th>
+                        <th>交易所購入價(鑽)</th>
+                        <th>PNIX 賣出價</th>
+                    </tr>
+                </thead>
+                <tbody id="market-price-table">
+                    <tr>
+                        <td><b>冰凍之淚</b></td>
+                        <td><input type="number" id="p_buy_TEAR" value="0.04" step="0.001" oninput="calculate()"></td>
+                        <td><input type="number" id="p_sell_TEAR" value="8.0" step="0.1" oninput="calculate()"></td>
+                        <td><input type="number" id="p_buy2_TEAR" value="1.8" step="0.01" oninput="calculate()"></td>
+                        <td><input type="number" id="p_pnix_TEAR" value="0.1" step="0.001" oninput="calculate()"></td>
+                    </tr>
+                    <tr>
+                        <td><b>墨水晶</b></td>
+                        <td><input type="number" id="p_buy_MORION" value="0.04" step="0.001" oninput="calculate()"></td>
+                        <td><input type="number" id="p_sell_MORION" value="8.0" step="0.1" oninput="calculate()"></td>
+                        <td><input type="number" id="p_buy2_MORION" value="1.57" step="0.01" oninput="calculate()"></td>
+                        <td><input type="number" id="p_pnix_MORION" value="0.1" step="0.001" oninput="calculate()"></td>
+                    </tr>
+                    <tr>
+                        <td><b>詛咒精華</b></td>
+                        <td><input type="number" id="p_buy_ESSENCE" value="0.04" step="0.001" oninput="calculate()"></td>
+                        <td><input type="number" id="p_sell_ESSENCE" value="8.0" step="0.1" oninput="calculate()"></td>
+                        <td><input type="number" id="p_buy2_ESSENCE" value="1.8" step="0.01" oninput="calculate()"></td>
+                        <td><input type="number" id="p_pnix_ESSENCE" value="0.1" step="0.001" oninput="calculate()"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="recommend-result" style="font-size: 0.85rem; color: #38bdf8; margin-top: 10px;">
+            ✨ 請填入您目前的 CROW 資本與市場行情，點擊一鍵分析尋找最佳獲利商品！
         </div>
     </div>
 
@@ -277,7 +340,7 @@
                     <label>選擇商品</label>
                     <div class="select-container">
                         <img id="s1-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp" alt="icon">
-                        <select id="s1-item" onchange="updateStepIcon(1)">
+                        <select id="s1-item" onchange="onStepItemChange(1)">
                             <option value="MORION">MORION 墨水晶</option>
                             <option value="TEAR" selected>TEAR 冰凍之淚</option>
                             <option value="ESSENCE">ESSENCE 詛咒精華</option>
@@ -295,7 +358,7 @@
                     <label>單價 / 數量設定</label>
                     <div class="form-row" style="gap:6px;">
                         <input type="number" id="s1-price" value="0.04" step="0.001" placeholder="單價" oninput="calculate()">
-                        <input type="number" id="s1-qty" value="120" placeholder="數量" oninput="calculate()">
+                        <input type="number" id="s1-qty" value="245" placeholder="數量" oninput="calculate()">
                     </div>
                 </div>
             </div>
@@ -363,10 +426,10 @@
                 <div class="form-group">
                     <label>商品</label>
                     <div class="select-container">
-                        <img id="s3-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-morion.webp" alt="icon">
+                        <img id="s3-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp" alt="icon">
                         <select id="s3-item" onchange="updateStepIcon(3)">
-                            <option value="MORION" selected>MORION 墨水晶</option>
-                            <option value="TEAR">TEAR 冰凍之淚</option>
+                            <option value="MORION">MORION 墨水晶</option>
+                            <option value="TEAR" selected>TEAR 冰凍之淚</option>
                             <option value="ESSENCE">ESSENCE 詛咒精華</option>
                             <option value="PAPYRUS">PAPYRUS 古代沙草紙</option>
                             <option value="ALLOY">ALLOY 古代匠人的合金</option>
@@ -406,7 +469,7 @@
                     <label>商品</label>
                     <div class="select-container">
                         <img id="s4-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-morion.webp" alt="icon">
-                        <select id="s4-item" onchange="updateStepIcon(4)">
+                        <select id="s4-item" onchange="onStepItemChange(4)">
                             <option value="MORION" selected>MORION 墨水晶</option>
                             <option value="TEAR">TEAR 冰凍之淚</option>
                             <option value="ESSENCE">ESSENCE 詛咒精華</option>
@@ -422,7 +485,7 @@
                 </div>
                 <div class="form-group">
                     <label>購入單價 (鑽石)</label>
-                    <input type="number" id="s4-price" value="1.8" step="0.01" oninput="calculate()">
+                    <input type="number" id="s4-price" value="1.57" step="0.01" oninput="calculate()">
                 </div>
             </div>
         </div>
@@ -489,10 +552,10 @@
                 <div class="form-group">
                     <label>商品</label>
                     <div class="select-container">
-                        <img id="s6-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-morion.webp" alt="icon">
-                        <select id="s6-item" onchange="updateStepIcon(6)">
-                            <option value="MORION" selected>MORION 墨水晶</option>
-                            <option value="TEAR">TEAR 冰凍之淚</option>
+                        <img id="s6-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp" alt="icon">
+                        <select id="s6-item" onchange="onStepItemChange(6)">
+                            <option value="MORION">MORION 墨水晶</option>
+                            <option value="TEAR" selected>TEAR 冰凍之淚</option>
                             <option value="ESSENCE">ESSENCE 詛咒精華</option>
                             <option value="PAPYRUS">PAPYRUS 古代沙草紙</option>
                             <option value="ALLOY">ALLOY 古代匠人的合金</option>
@@ -562,7 +625,7 @@
         "PAPYRUS": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-papyrus.webp",
         "ALLOY": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-alloy.webp",
         "FEATHER": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-feather.webp",
-        "PROMOTE": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-promote.webp",
+        "PROMOTE": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-gear.webp",
         "GEAR": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-gear.webp",
         "RAVN": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-ravn.webp",
         "CUSTOM": ""
@@ -580,37 +643,96 @@
         }
     }
 
+    // 當步驟選擇商品時，自動從行情表同步價格與圖示
     function onStepItemChange(step) {
         updateStepIcon(step);
         const item = document.getElementById(`s${step}-item`).value;
-        const ratioInput = document.getElementById(`s${step}-ratio`);
-
-        if (step === 5) {
-            if (item === 'MORION') {
-                ratioInput.value = 10;
-            } else {
-                ratioInput.value = 1;  
-            }
-        } else {
-            ratioInput.value = 1;
+        
+        // 自動同步該商品的行情價
+        if (step === 1) {
+            const p = document.getElementById(`p_buy_${item}`);
+            if (p) document.getElementById('s1-price').value = p.value;
+        } else if (step === 3) {
+            const p = document.getElementById(`p_sell_${item}`);
+            if (p) document.getElementById('s3-price').value = p.value;
+        } else if (step === 4) {
+            const p = document.getElementById(`p_buy2_${item}`);
+            if (p) document.getElementById('s4-price').value = p.value;
+            const ratioInput = document.getElementById('s5-ratio');
+            if (item === 'MORION') ratioInput.value = 10;
+            else ratioInput.value = 1;
+        } else if (step === 5) {
+            const ratioInput = document.getElementById(`s5-ratio`);
+            if (item === 'MORION') ratioInput.value = 10;
+            else ratioInput.value = 1;
+        } else if (step === 6) {
+            const p = document.getElementById(`p_pnix_${item}`);
+            if (p) document.getElementById('s6-price').value = p.value;
         }
         calculate();
     }
 
-    function autoSuggest() {
-        const budget = parseFloat(document.getElementById('user-crow-budget').value) || 5.0;
+    function autoSuggestBest() {
+        const budget = parseFloat(document.getElementById('user-crow-budget').value) || 10.4;
         const takerFee = parseFloat(document.getElementById('taker-fee').value) || 0.06;
         
-        // 假設常用進場價 0.04，自動幫您換算最大可買數量
-        const suggestedQty = Math.floor(budget / (0.04 * (1 + takerFee)));
-        document.getElementById('s1-qty').value = suggestedQty > 0 ? suggestedQty : 1;
+        // 抓取表格中的品項進行智慧比較（以冰凍之淚進場 -> 墨水晶變現為例測試）
+        const items = ['TEAR', 'MORION', 'ESSENCE'];
+        let bestProfit = -999;
+        let bestConfig = null;
 
-        calculate();
+        items.forEach(buyItem => {
+            items.forEach(sellItem => {
+                const buyP = parseFloat(document.getElementById(`p_buy_${buyItem}`).value) || 0.04;
+                const sellP = parseFloat(document.getElementById(`p_sell_${buyItem}`).value) || 8.0;
+                const buy2P = parseFloat(document.getElementById(`p_buy2_${sellItem}`).value) || 1.57;
+                const pnixP = parseFloat(document.getElementById(`p_pnix_${sellItem}`).value) || 0.1;
+                
+                const qty = Math.floor(budget / (buyP * (1 + takerFee)));
+                const cost = buyP * qty * (1 + takerFee);
+                
+                // 模擬流轉
+                const diamonds = Math.floor(qty * sellP * 0.95);
+                const s4Qty = Math.floor(diamonds / buy2P);
+                const ratio = (sellItem === 'MORION') ? 10 : 1;
+                const finalTokens = Math.floor(s4Qty / ratio);
+                const getCrow = finalTokens * pnixP * 0.96;
+                const profit = getCrow - cost;
 
-        const profitText = document.getElementById('res-get-crow').innerText;
-        document.getElementById('recommend-result').innerHTML = `
-            ✨ <b>智慧分析建議</b>：以您目前擁有 <b>${budget} CROW</b> 資本，步驟一建議進場採購約 <b>${suggestedQty} 個</b> 冰凍之淚。請參考下方 6 步驟詳細拆解與最終獲利預估！
-        `;
+                if (profit > bestProfit) {
+                    bestProfit = profit;
+                    bestConfig = { buyItem, sellItem, qty, profit, getCrow, cost };
+                }
+            });
+        });
+
+        if (bestConfig) {
+            // 自動套用到步驟 1 與步驟 4
+            document.getElementById('s1-item').value = bestConfig.buyItem;
+            onStepItemChange(1);
+            document.getElementById('s1-qty').value = bestConfig.qty;
+
+            document.getElementById('s3-item').value = bestConfig.buyItem;
+            onStepItemChange(3);
+
+            document.getElementById('s4-item').value = bestConfig.sellItem;
+            onStepItemChange(4);
+
+            document.getElementById('s5-item').value = bestConfig.sellItem;
+            onStepItemChange(5);
+
+            document.getElementById('s6-item').value = bestConfig.sellItem;
+            onStepItemChange(6);
+
+            calculate();
+
+            const resDiv = document.getElementById('recommend-result');
+            if (bestConfig.profit > 0) {
+                resDiv.innerHTML = `🟢 <b>最佳推薦組合</b>：買進 <b>${bestConfig.buyItem}</b> ➔ 交易所賣出 ➔ 買入 <b>${bestConfig.sellItem}</b> ➔ 轉換變現，預計可賺 <b>${bestConfig.profit.toFixed(3)} CROW</b>！已自動幫您帶入下方設定。`;
+            } else {
+                resDiv.innerHTML = `🔴 <b>市場雷達提示</b>：目前填寫的價格下，所有組合皆為虧損（最佳虧損 ${bestConfig.profit.toFixed(3)} CROW），建議調整行情表價格再行評估。`;
+            }
+        }
     }
 
     function calculate() {
