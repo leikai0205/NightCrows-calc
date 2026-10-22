@@ -222,14 +222,12 @@
         <div class="step-card">
             <div class="step-header">
                 <span>步驟 1：第一階段進場</span>
-                <span id="s1-sub" class="step-subtotal">總花費：0 CROW</span>
+                <span id="s1-sub" class="step-subtotal">花費: 0 CROW</span>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>動作</label>
-                    <select id="s1-action" onchange="calculate()">
-                        <option value="BUY" selected>🛒 購買 (Buy)</option>
-                    </select>
+                    <select id="s1-action" disabled><option>🛒 購買 (Buy)</option></select>
                 </div>
                 <div class="form-group">
                     <label>平台</label>
@@ -272,20 +270,16 @@
         <div class="step-card">
             <div class="step-header">
                 <span>步驟 2：遊戲內轉換/處理</span>
-                <span id="s2-sub" class="step-subtotal">轉換後產出：0 個</span>
+                <span id="s2-sub" class="step-subtotal">轉換產出: 0 個</span>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>動作</label>
-                    <select id="s2-action" onchange="calculate()">
-                        <option value="CONVERT" selected>🔄 轉換 (Convert)</option>
-                    </select>
+                    <select id="s2-action" disabled><option>🔄 轉換 (Convert)</option></select>
                 </div>
                 <div class="form-group">
                     <label>平台</label>
-                    <select id="s2-market" onchange="calculate()">
-                        <option value="MARKET" selected>遊戲內</option>
-                    </select>
+                    <select id="s2-market"><option>遊戲內</option></select>
                 </div>
             </div>
             <div class="form-row">
@@ -321,20 +315,16 @@
         <div class="step-card">
             <div class="step-header">
                 <span>步驟 3：交易所販售</span>
-                <span id="s3-sub" class="step-subtotal">獲得鑽石：0 鑽</span>
+                <span id="s3-sub" class="step-subtotal">獲得鑽石: 0 鑽</span>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>動作</label>
-                    <select id="s3-action" onchange="calculate()">
-                        <option value="SELL" selected>💰 販售 (Sell)</option>
-                    </select>
+                    <select id="s3-action" disabled><option>💰 販售 (Sell)</option></select>
                 </div>
                 <div class="form-group">
                     <label>平台</label>
-                    <select id="s3-market" onchange="calculate()">
-                        <option value="MARKET" selected>遊戲內交易所</option>
-                    </select>
+                    <select id="s3-market"><option>遊戲內交易所</option></select>
                 </div>
             </div>
             <div class="form-row">
@@ -367,20 +357,16 @@
         <div class="step-card">
             <div class="step-header">
                 <span>步驟 4：交易所購入第二樣商品</span>
-                <span id="s4-sub" class="step-subtotal">可購入數量：0 個</span>
+                <span id="s4-sub" class="step-subtotal">可購入數量: 0 個</span>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>動作</label>
-                    <select id="s4-action" onchange="calculate()">
-                        <option value="BUY" selected>🛒 購買 (Buy)</option>
-                    </select>
+                    <select id="s4-action" disabled><option>🛒 購買 (Buy)</option></select>
                 </div>
                 <div class="form-group">
                     <label>平台</label>
-                    <select id="s4-market" onchange="calculate()">
-                        <option value="MARKET" selected>遊戲內交易所</option>
-                    </select>
+                    <select id="s4-market"><option>遊戲內交易所</option></select>
                 </div>
             </div>
             <div class="form-row">
@@ -413,20 +399,16 @@
         <div class="step-card">
             <div class="step-header">
                 <span>步驟 5：再次轉換 (鑄造)</span>
-                <span id="s5-sub" class="step-subtotal">轉換後產出：0 個</span>
+                <span id="s5-sub" class="step-subtotal">轉換產出: 0 個</span>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>動作</label>
-                    <select id="s5-action" onchange="calculate()">
-                        <option value="CONVERT" selected>🔄 轉換 (Convert)</option>
-                    </select>
+                    <select id="s5-action" disabled><option>🔄 轉換 (Convert)</option></select>
                 </div>
                 <div class="form-group">
                     <label>平台</label>
-                    <select id="s5-market" onchange="calculate()">
-                        <option value="MARKET" selected>遊戲內</option>
-                    </select>
+                    <select id="s5-market"><option>遊戲內</option></select>
                 </div>
             </div>
             <div class="form-row">
@@ -462,20 +444,16 @@
         <div class="step-card">
             <div class="step-header">
                 <span>步驟 6：PNIX 最終售出變現</span>
-                <span id="s6-sub" class="step-subtotal">實得 CROW：0 CROW</span>
+                <span id="s6-sub" class="step-subtotal">實得 CROW: 0 CROW</span>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>動作</label>
-                    <select id="s6-action" onchange="calculate()">
-                        <option value="SELL" selected>💰 販售 (Sell)</option>
-                    </select>
+                    <select id="s6-action" disabled><option>💰 販售 (Sell)</option></select>
                 </div>
                 <div class="form-group">
                     <label>平台</label>
-                    <select id="s6-market" onchange="calculate()">
-                        <option value="PNIX" selected>PNIX 端</option>
-                    </select>
+                    <select id="s6-market"><option>PNIX 端</option></select>
                 </div>
             </div>
             <div class="form-row">
@@ -585,7 +563,7 @@
             feeInput.value = 1;    // 1鑽手續費
         } else {
             ratioInput.value = 1;  // 其他商品 1:1
-            feeInput.value = 1;    // 1鑽手續費
+            feeInput.value = 0;    // 其他轉化預設0
         }
         calculate();
     }
@@ -597,40 +575,38 @@
 
         // 步驟 1：買進
         const s1Price = parseFloat(document.getElementById('s1-price').value) || 0;
-        const s1Qty = parseFloat(document.getElementById('s1-qty').value) || 0;
+        const s1Qty = Math.floor(parseFloat(document.getElementById('s1-qty').value) || 0);
         const s1Market = document.getElementById('s1-market').value;
         const s1FeeRate = (s1Market === 'PNIX') ? takerFee : marketFee;
         const totalCostCrow = s1Price * s1Qty * (1 + s1FeeRate);
         const s1BuyFeeOnly = s1Price * s1Qty * s1FeeRate;
         document.getElementById('s1-sub').innerText = `花費: ${totalCostCrow.toFixed(3)} CROW (含手續費 ${s1BuyFeeOnly.toFixed(3)})`;
 
-        // 步驟 2：轉換 1
+        // 步驟 2：轉換 1 (傳入步驟 1 的整數數量，產出無條件捨去取整)
         const s2Ratio = parseFloat(document.getElementById('s2-ratio').value) || 1;
         const s2Fee = parseFloat(document.getElementById('s2-fee').value) || 0;
-        let amountAfterS2 = s2Ratio > 0 ? s1Qty / s2Ratio - s2Fee : s1Qty;
+        let amountAfterS2 = s2Ratio > 0 ? Math.floor(s1Qty / s2Ratio) - s2Fee : s1Qty;
         if(amountAfterS2 < 0) amountAfterS2 = 0;
-        document.getElementById('s2-sub').innerText = `轉換產出: ${amountAfterS2.toFixed(2)} 個`;
+        document.getElementById('s2-sub').innerText = `轉換產出: ${amountAfterS2} 個`;
 
-        // 步驟 3：交易所販售
+        // 步驟 3：交易所販售 (傳入步驟 2 產出的整數，獲得鑽石無條件捨去取整)
         const s3Price = parseFloat(document.getElementById('s3-price').value) || 0;
-        const s3Market = document.getElementById('s3-market').value;
-        const s3FeeRate = (s3Market === 'PNIX') ? makerFee : marketFee;
-        let diamondsAfterS3 = amountAfterS2 * s3Price * (1 - s3FeeRate);
-        document.getElementById('s3-sub').innerText = `獲得鑽石: ${diamondsAfterS3.toFixed(2)} 鑽`;
+        let diamondsAfterS3 = Math.floor(amountAfterS2 * s3Price * (1 - marketFee));
+        document.getElementById('s3-sub').innerText = `獲得鑽石: ${diamondsAfterS3} 鑽`;
 
-        // 步驟 4：購入第二樣商品
+        // 步驟 4：購入第二樣商品 (傳入步驟 3 獲得的整數鑽石，可購入數量無條件捨去取整)
         const s4Price = parseFloat(document.getElementById('s4-price').value) || 1;
-        let s4Qty = s4Price > 0 ? diamondsAfterS3 / s4Price : 0;
-        document.getElementById('s4-sub').innerText = `可購入數量: ${s4Qty.toFixed(2)} 個`;
+        let s4Qty = s4Price > 0 ? Math.floor(diamondsAfterS3 / s4Price) : 0;
+        document.getElementById('s4-sub').innerText = `可購入數量: ${s4Qty} 個`;
 
-        // 步驟 5：再次轉換
+        // 步驟 5：再次轉換 (傳入步驟 4 購入的整數數量，產出無條件捨去取整)
         const s5Ratio = parseFloat(document.getElementById('s5-ratio').value) || 1;
         const s5Fee = parseFloat(document.getElementById('s5-fee').value) || 0;
-        let finalTokens = s5Ratio > 0 ? s4Qty / s5Ratio - s5Fee : s4Qty;
+        let finalTokens = s5Ratio > 0 ? Math.floor(s4Qty / s5Ratio) - s5Fee : s4Qty;
         if(finalTokens < 0) finalTokens = 0;
-        document.getElementById('s5-sub').innerText = `轉換產出: ${finalTokens.toFixed(2)} 個`;
+        document.getElementById('s5-sub').innerText = `轉換產出: ${finalTokens} 個`;
 
-        // 步驟 6：PNIX 售出變現
+        // 步驟 6：PNIX 售出變現 (傳入步驟 5 產出的整數代幣)
         const s6Price = parseFloat(document.getElementById('s6-price').value) || 0;
         const getCrow = finalTokens * s6Price * (1 - makerFee);
         const profitCrow = getCrow - totalCostCrow;
@@ -638,7 +614,7 @@
 
         // 總結果更新
         document.getElementById('res-cost-crow').innerText = totalCostCrow.toFixed(3) + ' CROW';
-        document.getElementById('res-token-qty').innerText = finalTokens.toFixed(2) + ' 個';
+        document.getElementById('res-token-qty').innerText = `${finalTokens} 個`;
         document.getElementById('res-get-crow').innerText = getCrow.toFixed(3) + ' CROW';
 
         const statusBadge = document.getElementById('res-status');
