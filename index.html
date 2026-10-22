@@ -562,7 +562,8 @@
 </div>
 
 <script>
-    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwwF32RWEjS3G4SSE0L8YF4L_pfyvuoHSJQLs85JVI_gYRiX3hFV8WRuKM2-jl_0p2XFg/exec';
+    // 已更新為您最新部署的 Apps Script 網頁應用程式網址
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyc0tM_7JU0kSqpUkM2IZIqXBQ0q1zlrkzo58Ib_eIgR8488aiMUldUhBuuVViGk71Mjg/exec';
 
     const itemsData = [
         { id: "TEAR", name: "TEAR 冰凍之淚", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 },
@@ -599,7 +600,7 @@
         }
     }
 
-    // 將網頁修改後的數值儲存回 Google 試算表 (改用 GET 避開 Google POST 重新導向卡關)
+    // 將網頁修改後的數值儲存回 Google 試算表 (透過 GET 避開 POST 重新導向卡關)
     async function savePricesToGoogleSheet() {
         if (!GAS_API_URL.includes('http')) {
             alert('尚未設定 API 網址！');
@@ -837,7 +838,7 @@
 
         const statusBadge = document.getElementById('res-status');
         if (profitCrow >= 0) {
-            statusBadge.className = 'status-badge status-profit';
+            statusbadge.className = 'status-badge status-profit';
             statusBadge.innerHTML = `🟢 賺 ${profitCrow.toFixed(3)} CROW (有賺錢)`;
         } else {
             statusBadge.className = 'status-badge status-loss';
