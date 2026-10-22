@@ -576,28 +576,30 @@
         { id: "RAVN", name: "RAVN RAVIUM", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-ravn.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 }
     ];
 
-    // 從 Google 試算表讀取資料 (以商品名稱對應)
+    // 從 Google 試算表讀取資料 (透過 GET 請求)
     async function loadPricesFromGoogleSheet() {
         if (!GAS_API_URL.includes('http')) return;
         try {
             const response = await fetch(GAS_API_URL);
             const rows = await response.json();
             
-            rows.forEach(item => {
-                const sheetName = item.name ? item.name.trim() : '';
-                const target = itemsData.find(t => t.name === sheetName);
-                if (target) {
-                    if (item.buy !== undefined && item.buy !== "") target.defaultBuy = parseFloat(item.buy);
-                    if (item.buy2 !== undefined && item.buy2 !== "") target.defaultBuy2 = parseFloat(item.buy2);
-                    if (item.pnix !== undefined && item.pnix !== "") target.defaultPnix = parseFloat(item.pnix);
-                }
-            });
+            if (Array.isArray(rows)) {
+                rows.forEach(item => {
+                    const sheetName = item.name ? item.name.trim() : '';
+                    const target = itemsData.find(t => t.name === sheetName);
+                    if (target) {
+                        if (item.buy !== undefined && item.buy !== "") target.defaultBuy = parseFloat(item.buy);
+                        if (item.buy2 !== undefined && item.buy2 !== "") target.defaultBuy2 = parseFloat(item.buy2);
+                        if (item.pnix !== undefined && item.pnix !== "") target.defaultPnix = parseFloat(item.pnix);
+                    }
+                });
+            }
         } catch (error) {
             console.error("載入試算表失敗，將使用預設值", error);
         }
     }
 
-    // 將網頁修改後的數值儲存回 Google 試算表
+    // 將網頁修改後的數值儲存回 Google 試算表 (改用 GET 避開 Google POST 重新導向卡關)
     async function savePricesToGoogleSheet() {
         if (!GAS_API_URL.includes('http')) {
             alert('尚未設定 API 網址！');
@@ -619,12 +621,10 @@
         btn.disabled = true;
 
         try {
-            const response = await fetch(GAS_API_URL, {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            });
-            
+            const targetUrl = `${GAS_API_URL}?action=save&data=${encodeURIComponent(JSON.stringify(payload))}`;
+            const response = await fetch(targetUrl);
             const result = await response.json();
+            
             if (result.status === 'success') {
                 alert('✅ 成功同步儲存至 Google 試算表！');
             } else {
