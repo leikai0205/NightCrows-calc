@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>夜鴉 (NIGHT CROWS) 交易所</title>
+    <title>🦅 夜鴉 (NIGHT CROWS) 交易所計算器</title>
     <style>
         :root {
             --bg-color: #0f141c;
@@ -80,22 +80,53 @@
         label {
             font-size: 0.85rem;
             color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 讓選單外觀更精緻 */
+        .select-container {
+            display: flex;
+            align-items: center;
+            background-color: #0b1017;
+            border: 1px solid #2d3b54;
+            border-radius: 8px;
+            padding: 4px 10px;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .select-container:focus-within {
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+        }
+
+        .selected-icon {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            flex-shrink: 0;
         }
 
         select, input {
+            background-color: transparent;
+            border: none;
+            color: var(--text-main);
+            padding: 8px 4px;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+
+        input {
             background-color: #0b1017;
             border: 1px solid #2d3b54;
-            color: var(--text-main);
-            padding: 10px 12px;
             border-radius: 8px;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
+            padding: 10px 12px;
         }
 
         select:focus, input:focus {
             outline: none;
-            border-color: var(--accent-glow);
-            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
         }
 
         .result-box {
@@ -122,6 +153,16 @@
             border-radius: 8px;
             text-align: center;
             font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .status-profit {
+            background-color: rgba(74, 222, 128, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .status-loss {
             background-color: rgba(248, 113, 113, 0.15);
             color: var(--danger);
             border: 1px solid rgba(248, 113, 113, 0.3);
@@ -143,119 +184,190 @@
         <h1>🦅 夜鴉 (NIGHT CROWS) 交易所計算器</h1>
     </header>
 
-    <!-- 2️⃣ 選擇商品與價格輸入（移至上方並拆分買賣） -->
+    <!-- 商品選擇與價格設定 -->
     <div class="card">
         <h2>📦 商品選擇與價格設定</h2>
         
         <div class="form-row">
             <div class="form-group">
                 <label for="buy-item">🛒 購買商品 (PNIX 端)</label>
-                <select id="buy-item">
-                    <option value="MORION">MORION 墨水晶 (10顆 = 1幣)</option>
-                    <option value="TEAR" selected>TEAR 冰凍之淚</option>
-                    <option value="ESSENCE">ESSENCE 詛咒精華</option>
-                    <option value="PAPYRUS">PAPYRUS 古代沙草紙</option>
-                    <option value="ALLOY">ALLOY 古代匠人的合金</option>
-                    <option value="FEATHER">FEATHER 蒼天碎片</option>
-                    <option value="PROMOTE">PROMOTE 優級轉職信物</option>
-                    <option value="GEAR">GEAR 超精密飛行零件</option>
-                    <option value="RAVN">RAVN RAVIUM</option>
-                    <option value="CUSTOM">其他（自訂商品）</option>
-                </select>
+                <div class="select-container">
+                    <img id="buy-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp" alt="icon">
+                    <select id="buy-item" onchange="updateIcon('buy')">
+                        <option value="MORION">MORION 墨水晶 (10顆 = 1幣)</option>
+                        <option value="TEAR" selected>TEAR 冰凍之淚</option>
+                        <option value="ESSENCE">ESSENCE 詛咒精華</option>
+                        <option value="PAPYRUS">PAPYRUS 古代沙草紙</option>
+                        <option value="ALLOY">ALLOY 古代匠人的合金</option>
+                        <option value="FEATHER">FEATHER 蒼天碎片</option>
+                        <option value="PROMOTE">PROMOTE 優級轉職信物</option>
+                        <option value="GEAR">GEAR 超精密飛行零件</option>
+                        <option value="RAVN">RAVN RAVIUM</option>
+                        <option value="CUSTOM">其他（自訂商品）</option>
+                    </select>
+                </div>
             </div>
             
             <div class="form-group">
                 <label for="sell-item">💰 販售商品 (世界交易所端)</label>
-                <select id="sell-item">
-                    <option value="MORION" selected>MORION 墨水晶 (10顆 = 1幣)</option>
-                    <option value="TEAR">TEAR 冰凍之淚</option>
-                    <option value="ESSENCE">ESSENCE 詛咒精華</option>
-                    <option value="PAPYRUS">PAPYRUS 古代沙草紙</option>
-                    <option value="ALLOY">ALLOY 古代匠人的合金</option>
-                    <option value="FEATHER">FEATHER 蒼天碎片</option>
-                    <option value="PROMOTE">PROMOTE 優級轉職信物</option>
-                    <option value="GEAR">GEAR 超精密飛行零件</option>
-                    <option value="RAVN">RAVN RAVIUM</option>
-                    <option value="CUSTOM">其他（自訂商品）</option>
-                </select>
+                <div class="select-container">
+                    <img id="sell-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-morion.webp" alt="icon">
+                    <select id="sell-item" onchange="updateIcon('sell')">
+                        <option value="MORION" selected>MORION 墨水晶 (10顆 = 1幣)</option>
+                        <option value="TEAR">TEAR 冰凍之淚</option>
+                        <option value="ESSENCE">ESSENCE 詛咒精華</option>
+                        <option value="PAPYRUS">PAPYRUS 古代沙草紙</option>
+                        <option value="ALLOY">ALLOY 古代匠人的合金</option>
+                        <option value="FEATHER">FEATHER 蒼天碎片</option>
+                        <option value="PROMOTE">PROMOTE 優級轉職信物</option>
+                        <option value="GEAR">GEAR 超精密飛行零件</option>
+                        <option value="RAVN">RAVN RAVIUM</option>
+                        <option value="CUSTOM">其他（自訂商品）</option>
+                    </select>
+                </div>
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group">
                 <label for="pnix-buy-price">PNIX 買進價 (CROW)</label>
-                <input type="number" id="pnix-buy-price" value="0.04" step="0.001">
+                <input type="number" id="pnix-buy-price" value="0.04" step="0.001" oninput="calculate()">
             </div>
             <div class="form-group">
                 <label for="buy-qty">購買數量 (PNIX 端)</label>
-                <input type="number" id="buy-qty" value="111">
+                <input type="number" id="buy-qty" value="111" oninput="calculate()">
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group">
                 <label for="market-sell-price">世界交易所賣出價 (鑽石)</label>
-                <input type="number" id="market-sell-price" value="9.0" step="0.1">
+                <input type="number" id="market-sell-price" value="9.0" step="0.1" oninput="calculate()">
             </div>
             <div class="form-group">
                 <label for="game-buy-price">遊戲內買進價 / 回收價 (鑽石)</label>
-                <input type="number" id="game-buy-price" value="1.57" step="0.01">
+                <input type="number" id="game-buy-price" value="1.57" step="0.01" oninput="calculate()">
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group">
                 <label for="game-fixed-fee">遊戲內鑄造/上架固定扣鑽 (每幣)</label>
-                <input type="number" id="game-fixed-fee" value="1">
+                <input type="number" id="game-fixed-fee" value="1" oninput="calculate()">
             </div>
             <div class="form-group">
                 <label for="pnix-sell-price">PNIX 賣出價 (CROW)</label>
-                <input type="number" id="pnix-sell-price" value="0.11" step="0.001">
+                <input type="number" id="pnix-sell-price" value="0.11" step="0.001" oninput="calculate()">
             </div>
         </div>
     </div>
 
-    <!-- 3️⃣ 計算結果 -->
+    <!-- 計算結果 -->
     <div class="card result-box">
         <h2>📊 計算結果分析</h2>
         <div class="result-item">
             <span>實際花費 CROW (含買進手續費)：</span>
-            <span>4.706 CROW</span>
+            <span id="res-cost-crow">0.000 CROW</span>
         </div>
         <div class="result-item">
             <span>遊戲換回的代幣數量 (已扣固定鑄造費)：</span>
-            <span>0.51 個</span>
+            <span id="res-token-qty">0.00 個</span>
         </div>
         <div class="result-item">
             <span>賣回 PNIX 實得 CROW (含賣出手續費)：</span>
-            <span>0.054 CROW</span>
+            <span id="res-get-crow">0.000 CROW</span>
         </div>
         
-        <div class="status-badge">
-            🔴 賠 4.653 CROW (會虧錢)
+        <div id="res-status" class="status-badge status-loss">
+            🔴 計算中...
         </div>
     </div>
 
-    <!-- 1️⃣ 基礎參數設定（移至最下方，平時不需動） -->
+    <!-- 基礎參數設定（移至最下方） -->
     <div class="card params-section">
         <h2>⚙️ 基礎參數設定 (長期固定)</h2>
         <div class="form-row">
             <div class="form-group">
                 <label for="taker-fee">PNIX 買進手續費 (吃單 Taker)</label>
-                <input type="number" id="taker-fee" value="0.06" step="0.01">
+                <input type="number" id="taker-fee" value="0.06" step="0.01" oninput="calculate()">
             </div>
             <div class="form-group">
                 <label for="maker-fee">PNIX 賣出手續費 (掛單 Maker)</label>
-                <input type="number" id="maker-fee" value="0.04" step="0.01">
+                <input type="number" id="maker-fee" value="0.04" step="0.01" oninput="calculate()">
             </div>
         </div>
         <div class="form-group">
             <label for="market-fee">遊戲內交易所手續費</label>
-            <input type="number" id="market-fee" value="0.05" step="0.01">
+            <input type="number" id="market-fee" value="0.05" step="0.01" oninput="calculate()">
         </div>
     </div>
 
 </div>
+
+<script>
+    const iconMap = {
+        "MORION": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-morion.webp",
+        "TEAR": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp",
+        "ESSENCE": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-essence.webp",
+        "PAPYRUS": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-papyrus.webp",
+        "ALLOY": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-alloy.webp",
+        "FEATHER": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-feather.webp",
+        "PROMOTE": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-promote.webp",
+        "GEAR": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-gear.webp",
+        "RAVN": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-ravn.webp",
+        "CUSTOM": ""
+    };
+
+    function updateIcon(type) {
+        const select = document.getElementById(type + '-item');
+        const icon = document.getElementById(type + '-icon');
+        const val = select.value;
+        if (iconMap[val]) {
+            icon.src = iconMap[val];
+            icon.style.display = 'block';
+        } else {
+            icon.style.display = 'none';
+        }
+    }
+
+    function calculate() {
+        const buyPrice = parseFloat(document.getElementById('pnix-buy-price').value) || 0;
+        const buyQty = parseFloat(document.getElementById('buy-qty').value) || 0;
+        const marketSellPrice = parseFloat(document.getElementById('market-sell-price').value) || 0;
+        const gameBuyPrice = parseFloat(document.getElementById('game-buy-price').value) || 0;
+        const fixedFee = parseFloat(document.getElementById('game-fixed-fee').value) || 0;
+        const pnixSellPrice = parseFloat(document.getElementById('pnix-sell-price').value) || 0;
+
+        const takerFee = parseFloat(document.getElementById('taker-fee').value) || 0;
+        const makerFee = parseFloat(document.getElementById('maker-fee').value) || 0;
+        const marketFee = parseFloat(document.getElementById('market-fee').value) || 0;
+
+        const totalCostCrow = buyPrice * buyQty * (1 + takerFee);
+        const totalDiamonds = marketSellPrice * buyQty * (1 - marketFee);
+        const netDiamonds = totalDiamonds - (fixedFee * buyQty);
+        const tokenQty = gameBuyPrice > 0 ? netDiamonds / gameBuyPrice : 0;
+        const getCrow = tokenQty * pnixSellPrice * (1 - makerFee);
+        const profitCrow = getCrow - totalCostCrow;
+
+        document.getElementById('res-cost-crow').innerText = totalCostCrow.toFixed(3) + ' CROW';
+        document.getElementById('res-token-qty').innerText = tokenQty.toFixed(2) + ' 個';
+        document.getElementById('res-get-crow').innerText = getCrow.toFixed(3) + ' CROW';
+
+        const statusBadge = document.getElementById('res-status');
+        if (profitCrow >= 0) {
+            statusBadge.className = 'status-badge status-profit';
+            statusBadge.innerHTML = `🟢 賺 ${profitCrow.toFixed(3)} CROW (有賺錢)`;
+        } else {
+            statusBadge.className = 'status-badge status-loss';
+            statusBadge.innerHTML = `🔴 賠 ${Math.abs(profitCrow).toFixed(3)} CROW (會虧錢)`;
+        }
+    }
+
+    // 初始化執行
+    updateIcon('buy');
+    updateIcon('sell');
+    calculate();
+</script>
 
 </body>
 </html>
