@@ -213,22 +213,20 @@
 
     <!-- 跨市場套利設定（左右分欄：買進 vs 販售） -->
     <div class="card">
-        <h2>📦 跨市場套利設定</h2>
+        <h2>📦 跨市場套利與轉換設定</h2>
         
         <div class="form-row">
-            <!-- 左側：購買設定 -->
+            <!-- 左側：購買端設定 -->
             <div class="market-side">
                 <h3>🛒 購買端設定</h3>
                 
-                <!-- 第一個選項：購買還是販售 -->
                 <div class="form-group">
                     <label for="buy-action">1. 動作選擇</label>
-                    <select id="buy-action" disabled>
+                    <select id="buy-action" onchange="calculate()">
                         <option value="BUY" selected>🛒 購買 (Buy)</option>
                     </select>
                 </div>
 
-                <!-- 第二個選項：平台選擇 -->
                 <div class="form-group">
                     <label for="buy-market">2. 選擇平台</label>
                     <select id="buy-market" onchange="onPlatformChange('buy')">
@@ -238,7 +236,6 @@
                     <div id="buy-fee-hint" class="fee-hint">⚙️ 自動套用 PNIX 買進手續費 (Taker)</div>
                 </div>
 
-                <!-- 第三個選項：選擇商品 -->
                 <div class="form-group">
                     <label for="buy-item">3. 選擇商品</label>
                     <div class="select-container">
@@ -269,206 +266,18 @@
                 </div>
             </div>
 
-            <!-- 右側：販售設定 -->
+            <!-- 右側：販售端設定（含轉換動作） -->
             <div class="market-side">
-                <h3>💰 販售端設定</h3>
+                <h3>💰 販售 / 轉換端設定</h3>
                 
-                <!-- 第一個選項：購買還是販售 -->
                 <div class="form-group">
                     <label for="sell-action">1. 動作選擇</label>
-                    <select id="sell-action" disabled>
-                        <option value="SELL" selected>💰 販售 (Sell)</option>
+                    <select id="sell-action" onchange="calculate()">
+                        <option value="SELL">💰 販售 (Sell)</option>
+                        <option value="CONVERT" selected>🔄 轉換成代幣後再販售 (Convert)</option>
                     </select>
                 </div>
 
-                <!-- 第二個選項：平台選擇 -->
                 <div class="form-group">
                     <label for="sell-market">2. 選擇平台</label>
-                    <select id="sell-market" onchange="onPlatformChange('sell')">
-                        <option value="PNIX">PNIX 端 (自動套用 Maker 手續費)</option>
-                        <option value="MARKET" selected>遊戲內交易所 (固定 5% 手續費)</option>
-                    </select>
-                    <div id="sell-fee-hint" class="fee-hint">⚙️ 自動套用遊戲內交易所 5% 手續費</div>
-                </div>
-
-                <!-- 第三個選項：選擇商品 -->
-                <div class="form-group">
-                    <label for="sell-item">3. 選擇商品</label>
-                    <div class="select-container">
-                        <img id="sell-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-morion.webp" alt="icon">
-                        <select id="sell-item" onchange="updateIcon('sell')">
-                            <option value="MORION" selected>MORION 墨水晶</option>
-                            <option value="TEAR">TEAR 冰凍之淚</option>
-                            <option value="ESSENCE">ESSENCE 詛咒精華</option>
-                            <option value="PAPYRUS">PAPYRUS 古代沙草紙</option>
-                            <option value="ALLOY">ALLOY 古代匠人的合金</option>
-                            <option value="FEATHER">FEATHER 蒼天碎片</option>
-                            <option value="PROMOTE">PROMOTE 優級轉職信物</option>
-                            <option value="GEAR">GEAR 超精密飛行零件</option>
-                            <option value="RAVN">RAVN RAVIUM</option>
-                            <option value="CUSTOM">其他（自訂商品）</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="sell-price">販售單價 (鑽石 / CROW)</label>
-                    <input type="number" id="sell-price" value="9.0" step="0.1" oninput="calculate()">
-                </div>
-
-                <div class="form-group">
-                    <label for="pnix-final-price">最終變現賣出價 (CROW)</label>
-                    <input type="number" id="pnix-final-price" value="0.11" step="0.001" oninput="calculate()">
-                </div>
-            </div>
-        </div>
-
-        <!-- 轉換過渡輔助參數 -->
-        <div style="margin-top: 16px; border-top: 1px solid var(--card-border); padding-top: 14px;" class="form-row">
-            <div class="form-group">
-                <label for="game-buy-price">遊戲內轉換/回收價 (例如換成墨水晶比值)</label>
-                <input type="number" id="game-buy-price" value="1.57" step="0.01" oninput="calculate()">
-            </div>
-            <div class="form-group">
-                <label for="game-fixed-fee">遊戲內鑄造/上架固定扣鑽 (每幣)</label>
-                <input type="number" id="game-fixed-fee" value="1" oninput="calculate()">
-            </div>
-        </div>
-    </div>
-
-    <!-- 計算結果 -->
-    <div class="card result-box">
-        <h2>📊 計算結果分析</h2>
-        <div class="result-item">
-            <span>實際花費成本 (含買進手續費)：</span>
-            <span id="res-cost-crow">0.000 CROW</span>
-        </div>
-        <div class="result-item">
-            <span>遊戲中轉換/換回的數量：</span>
-            <span id="res-token-qty">0.00 個</span>
-        </div>
-        <div class="result-item">
-            <span>最終實得 CROW (含賣出手續費)：</span>
-            <span id="res-get-crow">0.000 CROW</span>
-        </div>
-        
-        <div id="res-status" class="status-badge status-loss">
-            🔴 計算中...
-        </div>
-    </div>
-
-    <!-- 基礎參數設定（維持在最下方） -->
-    <div class="card params-section">
-        <h2>⚙️ 基礎參數設定 (長期固定)</h2>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="taker-fee">PNIX 買進手續費 (吃單 Taker)</label>
-                <input type="number" id="taker-fee" value="0.06" step="0.01" oninput="calculate()">
-            </div>
-            <div class="form-group">
-                <label for="maker-fee">PNIX 賣出手續費 (掛單 Maker)</label>
-                <input type="number" id="maker-fee" value="0.04" step="0.01" oninput="calculate()">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="market-fee">遊戲內交易所手續費 (預設 5%)</label>
-            <input type="number" id="market-fee" value="0.05" step="0.01" oninput="calculate()">
-        </div>
-    </div>
-
-</div>
-
-<script>
-    const iconMap = {
-        "MORION": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-morion.webp",
-        "TEAR": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp",
-        "ESSENCE": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-essence.webp",
-        "PAPYRUS": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-papyrus.webp",
-        "ALLOY": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-alloy.webp",
-        "FEATHER": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-feather.webp",
-        "PROMOTE": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-promote.webp",
-        "GEAR": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-gear.webp",
-        "RAVN": "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-ravn.webp",
-        "CUSTOM": ""
-    };
-
-    function updateIcon(type) {
-        const select = document.getElementById(type + '-item');
-        const icon = document.getElementById(type + '-icon');
-        const val = select.value;
-        if (iconMap[val]) {
-            icon.src = iconMap[val];
-            icon.style.display = 'block';
-        } else {
-            icon.style.display = 'none';
-        }
-    }
-
-    function onPlatformChange(type) {
-        const market = document.getElementById(type + '-market').value;
-        const hint = document.getElementById(type + '-fee-hint');
-        
-        if (market === 'PNIX') {
-            if (type === 'buy') {
-                hint.innerText = "⚙️ 自動套用 PNIX 買進手續費 (Taker 0.06)";
-            } else {
-                hint.innerText = "⚙️ 自動套用 PNIX 賣出手續費 (Maker 0.04)";
-            }
-        } else {
-            hint.innerText = "⚙️ 自動套用遊戲內交易所固定 5% 手續費";
-        }
-        calculate();
-    }
-
-    function calculate() {
-        const buyMarket = document.getElementById('buy-market').value;
-        const sellMarket = document.getElementById('sell-market').value;
-
-        const buyPrice = parseFloat(document.getElementById('buy-price').value) || 0;
-        const buyQty = parseFloat(document.getElementById('buy-qty').value) || 0;
-        const sellPrice = parseFloat(document.getElementById('sell-price').value) || 0;
-        const finalPrice = parseFloat(document.getElementById('pnix-final-price').value) || 0;
-
-        const gameBuyPrice = parseFloat(document.getElementById('game-buy-price').value) || 0;
-        const fixedFee = parseFloat(document.getElementById('game-fixed-fee').value) || 0;
-
-        // 讀取底層設定手續費
-        const takerFee = parseFloat(document.getElementById('taker-fee').value) || 0.06;
-        const makerFee = parseFloat(document.getElementById('maker-fee').value) || 0.04;
-        const marketFee = parseFloat(document.getElementById('market-fee').value) || 0.05;
-
-        // 計算買進成本（若為 PNIX 套用 Taker，若為交易所套用 5%）
-        let actualBuyFeeRate = (buyMarket === 'PNIX') ? takerFee : marketFee;
-        const totalCostCrow = buyPrice * buyQty * (1 + actualBuyFeeRate);
-
-        // 計算販售與轉換
-        let actualSellFeeRate = (sellMarket === 'PNIX') ? makerFee : marketFee;
-        const totalDiamonds = sellPrice * buyQty * (1 - actualSellFeeRate);
-        const netDiamonds = totalDiamonds - (fixedFee * buyQty);
-        const tokenQty = gameBuyPrice > 0 ? netDiamonds / gameBuyPrice : 0;
-        
-        const getCrow = tokenQty * finalPrice * (1 - makerFee);
-        const profitCrow = getCrow - totalCostCrow;
-
-        document.getElementById('res-cost-crow').innerText = totalCostCrow.toFixed(3) + ' CROW';
-        document.getElementById('res-token-qty').innerText = tokenQty.toFixed(2) + ' 個';
-        document.getElementById('res-get-crow').innerText = getCrow.toFixed(3) + ' CROW';
-
-        const statusBadge = document.getElementById('res-status');
-        if (profitCrow >= 0) {
-            statusBadge.className = 'status-badge status-profit';
-            statusBadge.innerHTML = `🟢 賺 ${profitCrow.toFixed(3)} CROW (有賺錢)`;
-        } else {
-            statusBadge.className = 'status-badge status-loss';
-            statusBadge.innerHTML = `🔴 賠 ${Math.abs(profitCrow).toFixed(3)} CROW (會虧錢)`;
-        }
-    }
-
-    // 初始化執行
-    updateIcon('buy');
-    updateIcon('sell');
-    calculate();
-</script>
-
-</body>
-</html>
+                    <select
