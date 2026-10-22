@@ -114,19 +114,20 @@
             gap: 6px;
         }
 
-        .select-container {
-            display: flex;
-            align-items: center;
+        .select-wrapper {
+            position: relative;
             background-color: #0b1017;
             border: 1px solid #2d3b54;
             border-radius: 8px;
-            padding: 4px 10px;
-            gap: 10px;
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .selected-icon {
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             object-fit: contain;
             flex-shrink: 0;
         }
@@ -142,10 +143,12 @@
             box-sizing: border-box;
         }
 
-        .select-container select {
+        .select-wrapper select {
             background-color: transparent;
             border: none;
-            padding: 8px 4px;
+            padding: 4px;
+            width: 100%;
+            cursor: pointer;
         }
 
         select option {
@@ -186,7 +189,7 @@
             border-collapse: collapse;
             font-size: 0.82rem;
             margin-top: 10px;
-            white-space: nowrap; /* 確保商品名稱文字絕對不折行 */
+            white-space: nowrap;
         }
 
         .market-table th, .market-table td {
@@ -305,7 +308,7 @@
                         </tr>
                     </thead>
                     <tbody id="market-price-table">
-                        <!-- 動態由 JS 產生 9 大商品含圖示 -->
+                        <!-- 動態由 JS 產生 -->
                     </tbody>
                 </table>
             </div>
@@ -342,11 +345,9 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>選擇商品</label>
-                    <div class="select-container">
-                        <img id="s1-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp" alt="icon">
-                        <select id="s1-item" onchange="onStepItemChange(1)">
-                            <!-- 9個商品選單選項 -->
-                        </select>
+                    <div class="select-wrapper">
+                        <img id="s1-icon" class="selected-icon" src="" alt="icon">
+                        <select id="s1-item" onchange="onStepItemChange(1)"></select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -378,11 +379,9 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>商品</label>
-                    <div class="select-container">
-                        <img id="s2-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp" alt="icon">
-                        <select id="s2-item" onchange="onStepItemChange(2)">
-                            <!-- 9個商品選單選項 -->
-                        </select>
+                    <div class="select-wrapper">
+                        <img id="s2-icon" class="selected-icon" src="" alt="icon">
+                        <select id="s2-item" onchange="onStepItemChange(2)"></select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -411,11 +410,9 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>商品</label>
-                    <div class="select-container">
-                        <img id="s3-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp" alt="icon">
-                        <select id="s3-item" onchange="onStepItemChange(3)">
-                            <!-- 9個商品選單選項 -->
-                        </select>
+                    <div class="select-wrapper">
+                        <img id="s3-icon" class="selected-icon" src="" alt="icon">
+                        <select id="s3-item" onchange="onStepItemChange(3)"></select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -444,11 +441,9 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>商品</label>
-                    <div class="select-container">
-                        <img id="s4-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-morion.webp" alt="icon">
-                        <select id="s4-item" onchange="onStepItemChange(4)">
-                            <!-- 9個商品選單選項 -->
-                        </select>
+                    <div class="select-wrapper">
+                        <img id="s4-icon" class="selected-icon" src="" alt="icon">
+                        <select id="s4-item" onchange="onStepItemChange(4)"></select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -477,11 +472,9 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>商品</label>
-                    <div class="select-container">
-                        <img id="s5-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-morion.webp" alt="icon">
-                        <select id="s5-item" onchange="onStepItemChange(5)">
-                            <!-- 9個商品選單選項 -->
-                        </select>
+                    <div class="select-wrapper">
+                        <img id="s5-icon" class="selected-icon" src="" alt="icon">
+                        <select id="s5-item" onchange="onStepItemChange(5)"></select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -510,11 +503,9 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>商品</label>
-                    <div class="select-container">
-                        <img id="s6-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp" alt="icon">
-                        <select id="s6-item" onchange="onStepItemChange(6)">
-                            <!-- 9個商品選單選項 -->
-                        </select>
+                    <div class="select-wrapper">
+                        <img id="s6-icon" class="selected-icon" src="" alt="icon">
+                        <select id="s6-item" onchange="onStepItemChange(6)"></select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -546,7 +537,7 @@
         </div>
     </div>
 
-    <!-- 基礎參數設定（維持在最下方） -->
+    <!-- 基礎參數設定 -->
     <div class="card params-section">
         <h2>⚙️ 基礎參數設定 (長期固定)</h2>
         <div class="form-row">
@@ -580,13 +571,11 @@
         { id: "RAVN", name: "RAVN RAVIUM", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-ravn.webp", defaultBuy: 0.04, defaultSell: 8.0, defaultBuy2: 1.8, defaultPnix: 0.1 }
     ];
 
-    // 初始化下拉選單與行情表格
     function initUI() {
         const tbody = document.getElementById('market-price-table');
         tbody.innerHTML = '';
 
         itemsData.forEach(item => {
-            // 建立行情表格列（加上小圖示，名稱保持一行）
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td><img src="${item.icon}" class="table-icon"><span>${item.name}</span></td>
@@ -598,7 +587,6 @@
             tbody.appendChild(tr);
         });
 
-        // 填充步驟 1~6 的下拉選單
         for (let i = 1; i <= 6; i++) {
             const select = document.getElementById(`s${i}-item`);
             select.innerHTML = '';
@@ -684,4 +672,107 @@
                 const s4Qty = Math.floor(diamonds / buy2P);
                 const ratio = (sellItem === 'MORION') ? 10 : 1;
                 const finalTokens = Math.floor(s4Qty / ratio);
-                const getCrow
+                const getCrow = finalTokens * pnixP * 0.96;
+                const profit = getCrow - cost;
+
+                if (profit > bestProfit) {
+                    bestProfit = profit;
+                    bestConfig = { buyItem, sellItem, qty, profit };
+                }
+            });
+        });
+
+        if (bestConfig) {
+            document.getElementById('s1-item').value = bestConfig.buyItem;
+            onStepItemChange(1);
+            document.getElementById('s1-qty').value = bestConfig.qty;
+
+            document.getElementById('s3-item').value = bestConfig.buyItem;
+            onStepItemChange(3);
+
+            document.getElementById('s4-item').value = bestConfig.sellItem;
+            onStepItemChange(4);
+
+            document.getElementById('s5-item').value = bestConfig.sellItem;
+            onStepItemChange(5);
+
+            document.getElementById('s6-item').value = bestConfig.sellItem;
+            onStepItemChange(6);
+
+            calculate();
+
+            const resDiv = document.getElementById('recommend-result');
+            const buyName = itemsData.find(i => i.id === bestConfig.buyItem).name;
+            const sellName = itemsData.find(i => i.id === bestConfig.sellItem).name;
+
+            if (bestConfig.profit > 0) {
+                resDiv.innerHTML = `🟢 <b>最佳推薦組合</b>：買進 <b>${buyName}</b> ➔ 交易所賣出 ➔ 買入 <b>${sellName}</b> ➔ 轉換變現，預計可賺 <b>${bestConfig.profit.toFixed(3)} CROW</b>！已自動幫您帶入下方設定。`;
+            } else {
+                resDiv.innerHTML = `🔴 <b>市場雷達提示</b>：目前價格下所有組合皆為虧損（最佳虧損 ${bestConfig.profit.toFixed(3)} CROW），建議微調行情價格。`;
+            }
+        }
+    }
+
+    function calculate() {
+        const takerFee = parseFloat(document.getElementById('taker-fee').value) || 0.06;
+        const makerFee = parseFloat(document.getElementById('maker-fee').value) || 0.04;
+        const marketFee = parseFloat(document.getElementById('market-fee').value) || 0.05;
+
+        // 步驟 1：買進
+        const s1Price = parseFloat(document.getElementById('s1-price').value) || 0;
+        const s1Qty = Math.floor(parseFloat(document.getElementById('s1-qty').value) || 0);
+        const s1Market = document.getElementById('s1-market').value;
+        const s1FeeRate = (s1Market === 'PNIX') ? takerFee : marketFee;
+        const totalCostCrow = s1Price * s1Qty * (1 + s1FeeRate);
+        const s1BuyFeeOnly = s1Price * s1Qty * s1FeeRate;
+        document.getElementById('s1-sub').innerText = `花費: ${totalCostCrow.toFixed(3)} CROW (含手續費 ${s1BuyFeeOnly.toFixed(3)})`;
+
+        // 步驟 2：轉換 1
+        const s2Ratio = parseFloat(document.getElementById('s2-ratio').value) || 1;
+        let amountAfterS2 = s2Ratio > 0 ? Math.floor(s1Qty / s2Ratio) : s1Qty;
+        document.getElementById('s2-sub').innerText = `轉換產出: ${amountAfterS2} 個`;
+
+        // 步驟 3：交易所販售
+        const s3Price = parseFloat(document.getElementById('s3-price').value) || 0;
+        let diamondsAfterS3 = Math.floor(amountAfterS2 * s3Price * (1 - marketFee));
+        document.getElementById('s3-sub').innerText = `獲得鑽石: ${diamondsAfterS3} 鑽`;
+
+        // 步驟 4：購入第二樣商品
+        const s4Price = parseFloat(document.getElementById('s4-price').value) || 1;
+        let s4Qty = s4Price > 0 ? Math.floor(diamondsAfterS3 / s4Price) : 0;
+        document.getElementById('s4-sub').innerText = `可購入數量: ${s4Qty} 個`;
+
+        // 步驟 5：再次轉換
+        const s5Ratio = parseFloat(document.getElementById('s5-ratio').value) || 1;
+        let finalTokens = s5Ratio > 0 ? Math.floor(s4Qty / s5Ratio) : s4Qty;
+        if(finalTokens < 0) finalTokens = 0;
+        document.getElementById('s5-sub').innerText = `轉換產出: ${finalTokens} 個 (手續費: ${finalTokens} 鑽)`;
+
+        // 步驟 6：PNIX 售出變現
+        const s6Price = parseFloat(document.getElementById('s6-price').value) || 0;
+        const getCrow = finalTokens * s6Price * (1 - makerFee);
+        const profitCrow = getCrow - totalCostCrow;
+        document.getElementById('s6-sub').innerText = `實得 CROW: ${getCrow.toFixed(3)} CROW`;
+
+        // 總結果更新
+        document.getElementById('res-cost-crow').innerText = totalCostCrow.toFixed(3) + ' CROW';
+        document.getElementById('res-token-qty').innerText = `${finalTokens} 個`;
+        document.getElementById('res-get-crow').innerText = getCrow.toFixed(3) + ' CROW';
+
+        const statusBadge = document.getElementById('res-status');
+        if (profitCrow >= 0) {
+            statusBadge.className = 'status-badge status-profit';
+            statusBadge.innerHTML = `🟢 賺 ${profitCrow.toFixed(3)} CROW (有賺錢)`;
+        } else {
+            statusBadge.className = 'status-badge status-loss';
+            statusBadge.innerHTML = `🔴 賠 ${Math.abs(profitCrow).toFixed(3)} CROW (會虧錢)`;
+        }
+    }
+
+    // 頁面初始化
+    initUI();
+    calculate();
+</script>
+
+</body>
+</html>
