@@ -546,4 +546,341 @@
         <div class="form-row">
             <div class="form-group">
                 <label for="taker-fee">PNIX 買進手續費 (吃單 Taker)</label>
-                <input type="number" id="taker-fee" value="0.06" step="0.01" oninput="
+                <input type="number" id="taker-fee" value="0.06" step="0.01" oninput="calculate()">
+            </div>
+            <div class="form-group">
+                <label for="maker-fee">PNIX 賣出手續費 (掛單 Maker)</label>
+                <input type="number" id="maker-fee" value="0.04" step="0.01" oninput="calculate()">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="market-fee">遊戲內交易所手續費 (預設 5%)</label>
+            <input type="number" id="market-fee" value="0.05" step="0.01" oninput="calculate()">
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyc0tM_7JU0kSqpUkM2IZIqXBQ0q1zlrkzo58Ib_eIgR8488aiMUldUhBuuVViGk71Mjg/exec';
+
+    const itemsData = [
+        { id: "TEAR", name: "TEAR 冰凍之淚", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 },
+        { id: "MORION", name: "MORION 墨水晶", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-morion.webp", defaultBuy: 0.04, defaultBuy2: 1.57, defaultPnix: 0.1 },
+        { id: "ESSENCE", name: "ESSENCE 詛咒精華", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-essence.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 },
+        { id: "PAPYRUS", name: "PAPYRUS 古代沙草紙", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-papyrus.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 },
+        { id: "ALLOY", name: "ALLOY 古代匠人的合金", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-alloy.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 },
+        { id: "FEATHER", name: "FEATHER 蒼天碎片", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-feather.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 },
+        { id: "PROMOTE", name: "PROMOTE 優級轉職信物", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-promote.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 },
+        { id: "GEAR", name: "GEAR 超精密飛行零件", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-gear.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 },
+        { id: "RAVN", name: "RAVN RAVIUM", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-ravn.webp", defaultBuy: 0.04, defaultBuy2: 1.8, defaultPnix: 0.1 }
+    ];
+
+    // 從 Google 試算表讀取資料
+    async function loadPricesFromGoogleSheet() {
+        if (!GAS_API_URL.includes('http')) return;
+        try {
+            const response = await fetch(GAS_API_URL);
+            const rows = await response.json();
+            
+            if (Array.isArray(rows)) {
+                rows.forEach(item => {
+                    const sheetName = item.name ? item.name.trim() : '';
+                    const target = itemsData.find(t => t.name === sheetName);
+                    if (target) {
+                        if (item.buy !== undefined && item.buy !== "") target.defaultBuy = parseFloat(item.buy);
+                        if (item.buy2 !== undefined && item.buy2 !== "") target.defaultBuy2 = parseFloat(item.buy2);
+                        if (item.pnix !== undefined && item.pnix !== "") target.defaultPnix = parseFloat(item.pnix);
+                    }
+                });
+            }
+        } catch (error) {
+            console.error("載入試算表失敗，將使用預設值", error);
+        }
+    }
+
+    // 將網頁修改後的數值儲存回 Google 試算表 (透過隱藏 iframe 提交表單)
+    function savePricesToGoogleSheet() {
+        if (!GAS_API_URL.includes('http')) {
+            alert('尚未設定 API 網址！');
+            return;
+        }
+
+        const payload = itemsData.map(item => {
+            return {
+                name: item.name,
+                buy: parseFloat(document.getElementById(`p_buy_${item.id}`).value) || 0,
+                buy2: parseFloat(document.getElementById(`p_buy2_${item.id}`).value) || 0,
+                pnix: parseFloat(document.getElementById(`p_pnix_${item.id}`).value) || 0
+            };
+        });
+
+        const btn = event.target;
+        const originalText = btn.innerText;
+        btn.innerText = '⏳ 儲存中...';
+        btn.disabled = true;
+
+        let iframe = document.getElementById('hidden_iframe');
+        if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.name = 'hidden_iframe';
+            iframe.id = 'hidden_iframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+        }
+
+        let form = document.getElementById('hidden_form');
+        if (!form) {
+            form = document.createElement('form');
+            form.id = 'hidden_form';
+            form.method = 'GET';
+            form.action = GAS_API_URL;
+            form.target = 'hidden_iframe';
+            document.body.appendChild(form);
+        } else {
+            form.innerHTML = '';
+        }
+
+        const inputAction = document.createElement('input');
+        inputAction.type = 'hidden';
+        inputAction.name = 'action';
+        inputAction.value = 'save';
+        form.appendChild(inputAction);
+
+        const inputData = document.createElement('input');
+        inputData.type = 'hidden';
+        inputData.name = 'data';
+        inputData.value = JSON.stringify(payload);
+        form.appendChild(inputData);
+
+        form.submit();
+
+        setTimeout(() => {
+            alert('✅ 成功同步儲存至 Google 試算表！');
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }, 1000);
+    }
+
+    function initUI() {
+        const tbody = document.getElementById('market-price-table');
+        tbody.innerHTML = '';
+
+        itemsData.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><img src="${item.icon}" class="table-icon"><span>${item.name}</span></td>
+                <td><input type="number" id="p_buy_${item.id}" value="${item.defaultBuy}" step="0.001" oninput="calculate()"></td>
+                <td><input type="number" id="p_buy2_${item.id}" value="${item.defaultBuy2}" step="0.01" oninput="calculate()"></td>
+                <td><input type="number" id="p_pnix_${item.id}" value="${item.defaultPnix}" step="0.001" oninput="calculate()"></td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        for (let i = 1; i <= 6; i++) {
+            const select = document.getElementById(`s${i}-item`);
+            if (!select) continue;
+            select.innerHTML = '';
+            itemsData.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.id;
+                opt.text = item.name;
+                if (i === 1 && item.id === 'MORION') opt.selected = true;
+                if (i === 2 && item.id === 'MORION') opt.selected = true;
+                if (i === 3 && item.id === 'MORION') opt.selected = true;
+                if (i === 4 && item.id === 'MORION') opt.selected = true;
+                if (i === 5 && item.id === 'MORION') opt.selected = true;
+                if (i === 6 && item.id === 'MORION') opt.selected = true;
+                select.appendChild(opt);
+            });
+            updateStepIcon(i);
+        }
+    }
+
+    const iconMap = {};
+    itemsData.forEach(i => iconMap[i.id] = i.icon);
+
+    function updateStepIcon(step) {
+        const select = document.getElementById(`s${step}-item`);
+        const icon = document.getElementById(`s${step}-icon`);
+        if (!select || !icon) return;
+        const val = select.value;
+        if (iconMap[val]) {
+            icon.src = iconMap[val];
+            icon.style.display = 'block';
+        } else {
+            icon.style.display = 'none';
+        }
+    }
+
+    function onStepItemChange(step) {
+        updateStepIcon(step);
+        const item = document.getElementById(`s${step}-item`).value;
+        
+        if (step === 1) {
+            const p = document.getElementById(`p_buy_${item}`);
+            if (p) document.getElementById('s1-price').value = p.value;
+            document.getElementById('s2-item').value = item;
+            updateStepIcon(2);
+            document.getElementById('s2-ratio').value = (item === 'MORION') ? 10 : 1;
+        } else if (step === 4) {
+            const p = document.getElementById(`p_buy2_${item}`);
+            if (p) document.getElementById('s4-price').value = p.value;
+            document.getElementById('s5-item').value = item;
+            updateStepIcon(5);
+            const ratioInput = document.getElementById('s5-ratio');
+            if (item === 'MORION') ratioInput.value = 10;
+            else ratioInput.value = 1;
+        } else if (step === 5) {
+            const ratioInput = document.getElementById(`s5-ratio`);
+            if (item === 'MORION') ratioInput.value = 10;
+            else ratioInput.value = 1;
+        } else if (step === 6) {
+            const p = document.getElementById(`p_pnix_${item}`);
+            if (p) document.getElementById('s6-price').value = p.value;
+        }
+        calculate();
+    }
+
+    function autoSuggestBest() {
+        const budget = parseFloat(document.getElementById('user-crow-budget').value) || 0;
+        const takerFee = parseFloat(document.getElementById('taker-fee').value) || 0.06;
+        
+        let bestProfit = -999;
+        let bestConfig = null;
+
+        itemsData.forEach(buyObj => {
+            itemsData.forEach(sellObj => {
+                const buyItem = buyObj.id;
+                const sellItem = sellObj.id;
+
+                const buyP = parseFloat(document.getElementById(`p_buy_${buyItem}`).value) || 0.04;
+                const sellP = parseFloat(document.getElementById(`p_buy2_${buyItem}`).value) || 8.0; 
+                const buy2P = parseFloat(document.getElementById(`p_buy2_${sellItem}`).value) || 1.8;
+                const pnixP = parseFloat(document.getElementById(`p_pnix_${sellItem}`).value) || 0.1;
+                
+                const qty = Math.floor(budget / (buyP * (1 + takerFee)));
+                if (qty <= 0) return;
+                const cost = buyP * qty * (1 + takerFee);
+                
+                const s2Multiplier = (buyItem === 'MORION') ? 10 : 1;
+                const amountAfterS2 = qty * s2Multiplier;
+
+                const diamonds = Math.floor(amountAfterS2 * sellP * 0.95);
+                const s4Qty = Math.floor(diamonds / buy2P);
+                const ratio = (sellItem === 'MORION') ? 10 : 1;
+                const finalTokens = Math.floor(s4Qty / ratio);
+                const getCrow = finalTokens * pnixP * 0.96;
+                const profit = getCrow - cost;
+
+                if (profit > bestProfit) {
+                    bestProfit = profit;
+                    bestConfig = { buyItem, sellItem, qty, profit };
+                }
+            });
+        });
+
+        if (bestConfig) {
+            document.getElementById('s1-item').value = bestConfig.buyItem;
+            document.getElementById('s2-item').value = bestConfig.buyItem;
+            document.getElementById('s3-item').value = bestConfig.buyItem;
+            onStepItemChange(1);
+            
+            const s3PInput = document.getElementById(`p_buy2_${bestConfig.buyItem}`);
+            if (s3PInput) document.getElementById('s3-price').value = s3PInput.value;
+
+            document.getElementById('s1-qty').value = bestConfig.qty;
+            document.getElementById('s2-ratio').value = (bestConfig.buyItem === 'MORION') ? 10 : 1;
+
+            document.getElementById('s4-item').value = bestConfig.sellItem;
+            document.getElementById('s5-item').value = bestConfig.sellItem;
+            document.getElementById('s6-item').value = bestConfig.sellItem;
+            onStepItemChange(4);
+            onStepItemChange(6);
+
+            calculate();
+
+            const resDiv = document.getElementById('recommend-result');
+            const buyName = itemsData.find(i => i.id === bestConfig.buyItem).name;
+            const sellName = itemsData.find(i => i.id === bestConfig.sellItem).name;
+
+            if (bestConfig.profit > 0) {
+                resDiv.innerHTML = `🟢 <b>最佳推薦組合</b>：買進 <b>${buyName}</b> ➔ 交易所賣出 ➔ 買入 <b>${sellName}</b> ➔ 轉換變現，預計可賺 <b>${bestConfig.profit.toFixed(3)} CROW</b>！已自動幫您帶入下方 1~6 步驟設定。`;
+            } else {
+                resDiv.innerHTML = `🔴 <b>市場雷達提示</b>：目前價格下所有組合皆為虧損（最佳虧損 ${bestConfig.profit.toFixed(3)} CROW），建議微調行情價格。`;
+            }
+        } else {
+            alert('⚠️ 資本額不足或尚未輸入有效的 CROW 資本，無法計算推薦組合！');
+        }
+    }
+
+    function calculate() {
+        const takerFee = parseFloat(document.getElementById('taker-fee').value) || 0.06;
+        const makerFee = parseFloat(document.getElementById('maker-fee').value) || 0.04;
+        const marketFee = parseFloat(document.getElementById('market-fee').value) || 0.05;
+
+        // 步驟 1：買進
+        const s1Price = parseFloat(document.getElementById('s1-price').value) || 0;
+        const s1Qty = Math.floor(parseFloat(document.getElementById('s1-qty').value) || 0);
+        const s1Market = document.getElementById('s1-market').value;
+        const s1FeeRate = (s1Market === 'PNIX') ? takerFee : marketFee;
+        const totalCostCrow = s1Price * s1Qty * (1 + s1FeeRate);
+        const s1BuyFeeOnly = s1Price * s1Qty * s1FeeRate;
+        document.getElementById('s1-sub').innerText = `花費: ${totalCostCrow.toFixed(3)} CROW (含手續費 ${s1BuyFeeOnly.toFixed(3)})`;
+
+        // 步驟 2：轉換 1
+        const s2Ratio = parseFloat(document.getElementById('s2-ratio').value) || 1;
+        let amountAfterS2 = Math.floor(s1Qty * s2Ratio);
+        document.getElementById('s2-sub').innerText = `轉換產出: ${amountAfterS2} 個`;
+
+        // 步驟 3：交易所販售
+        const s3Price = parseFloat(document.getElementById('s3-price').value) || 0;
+        let diamondsAfterS3 = Math.floor(amountAfterS2 * s3Price * (1 - marketFee));
+        document.getElementById('s3-sub').innerText = `獲得鑽石: ${diamondsAfterS3} 鑽`;
+
+        // 步驟 4：購入第二樣商品
+        const s4Price = parseFloat(document.getElementById('s4-price').value) || 1;
+        let s4Qty = s4Price > 0 ? Math.floor(diamondsAfterS3 / s4Price) : 0;
+        document.getElementById('s4-sub').innerText = `可購入數量: ${s4Qty} 個`;
+
+        // 步驟 5：再次轉換
+        const s5Ratio = parseFloat(document.getElementById('s5-ratio').value) || 1;
+        let finalTokens = s5Ratio > 0 ? Math.floor(s4Qty / s5Ratio) : s4Qty;
+        if(finalTokens < 0) finalTokens = 0;
+        document.getElementById('s5-sub').innerText = `轉換產出: ${finalTokens} 個`;
+
+        // 步驟 6：PNIX 售出變現
+        const s6Price = parseFloat(document.getElementById('s6-price').value) || 0;
+        const getCrow = finalTokens * s6Price * (1 - makerFee);
+        const profitCrow = getCrow - totalCostCrow;
+        document.getElementById('s6-sub').innerText = `實得 CROW: ${getCrow.toFixed(3)} CROW`;
+
+        // 總結果更新
+        document.getElementById('res-cost-crow').innerText = totalCostCrow.toFixed(3) + ' CROW';
+        document.getElementById('res-token-qty').innerText = `${finalTokens} 個`;
+        document.getElementById('res-get-crow').innerText = getCrow.toFixed(3) + ' CROW';
+
+        const statusBadge = document.getElementById('res-status');
+        if (profitCrow >= 0) {
+            statusBadge.className = 'status-badge status-profit';
+            statusBadge.innerHTML = `🟢 賺 ${profitCrow.toFixed(3)} CROW (有賺錢)`;
+        } else {
+            statusBadge.className = 'status-badge status-loss';
+            statusBadge.innerHTML = `🔴 賠 ${Math.abs(profitCrow).toFixed(3)} CROW (會虧錢)`;
+        }
+    }
+
+    // 確保頁面載入時安全執行初始化
+    window.onload = async function() {
+        try {
+            await loadPricesFromGoogleSheet();
+        } catch (e) {
+            console.error("載入Google試算表發生異常，使用預設值", e);
+        }
+        initUI();
+        calculate();
+    };
+</script>
+
+</body>
+</html>
