@@ -84,6 +84,15 @@
             padding-bottom: 6px;
         }
 
+        .step-subtotal {
+            font-size: 0.8rem;
+            color: var(--success);
+            background: rgba(74, 222, 128, 0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(74, 222, 128, 0.2);
+        }
+
         .form-group {
             margin-bottom: 12px;
             display: flex;
@@ -113,12 +122,6 @@
             border-radius: 8px;
             padding: 4px 10px;
             gap: 10px;
-            transition: all 0.2s ease;
-        }
-
-        .select-container:focus-within {
-            border-color: var(--accent-glow);
-            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
         }
 
         .selected-icon {
@@ -154,12 +157,6 @@
         select:focus, input:focus {
             outline: none;
             border-color: var(--accent-glow);
-        }
-
-        .fee-hint {
-            font-size: 0.75rem;
-            color: #38bdf8;
-            margin-top: 2px;
         }
 
         .result-box {
@@ -223,14 +220,15 @@
 
         <!-- 步驟 1 -->
         <div class="step-card">
-            <div class="step-header"><span>步驟 1：第一階段進場</span></div>
+            <div class="step-header">
+                <span>步驟 1：第一階段進場</span>
+                <span id="s1-sub" class="step-subtotal">總花費：0 CROW</span>
+            </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>動作</label>
                     <select id="s1-action" onchange="calculate()">
                         <option value="BUY" selected>🛒 購買 (Buy)</option>
-                        <option value="CONVERT">🔄 轉換 (Convert)</option>
-                        <option value="SELL">💰 販售 (Sell)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -272,20 +270,20 @@
 
         <!-- 步驟 2 -->
         <div class="step-card">
-            <div class="step-header"><span>步驟 2：遊戲內轉換/處理</span></div>
+            <div class="step-header">
+                <span>步驟 2：遊戲內轉換/處理</span>
+                <span id="s2-sub" class="step-subtotal">轉換後產出：0 個</span>
+            </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>動作</label>
                     <select id="s2-action" onchange="calculate()">
-                        <option value="BUY">🛒 購買 (Buy)</option>
                         <option value="CONVERT" selected>🔄 轉換 (Convert)</option>
-                        <option value="SELL">💰 販售 (Sell)</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>平台</label>
                     <select id="s2-market" onchange="calculate()">
-                        <option value="PNIX">PNIX 端</option>
                         <option value="MARKET" selected>遊戲內</option>
                     </select>
                 </div>
@@ -295,7 +293,7 @@
                     <label>商品</label>
                     <div class="select-container">
                         <img id="s2-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp" alt="icon">
-                        <select id="s2-item" onchange="updateStepIcon(2)">
+                        <select id="s2-item" onchange="onStepItemChange(2)">
                             <option value="MORION">MORION 墨水晶</option>
                             <option value="TEAR" selected>TEAR 冰凍之淚</option>
                             <option value="ESSENCE">ESSENCE 詛咒精華</option>
@@ -310,10 +308,10 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>轉換比例 / 固大手續費</label>
+                    <label>轉換比例 (幾顆換1個) / 手續費</label>
                     <div class="form-row" style="gap:6px;">
-                        <input type="number" id="s2-price" value="1" placeholder="比例" oninput="calculate()">
-                        <input type="number" id="s2-fee" value="1" placeholder="扣鑽" oninput="calculate()">
+                        <input type="number" id="s2-ratio" value="1" placeholder="比例" oninput="calculate()">
+                        <input type="number" id="s2-fee" value="0" placeholder="扣鑽" oninput="calculate()">
                     </div>
                 </div>
             </div>
@@ -321,20 +319,20 @@
 
         <!-- 步驟 3 -->
         <div class="step-card">
-            <div class="step-header"><span>步驟 3：交易所販售</span></div>
+            <div class="step-header">
+                <span>步驟 3：交易所販售</span>
+                <span id="s3-sub" class="step-subtotal">獲得鑽石：0 鑽</span>
+            </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>動作</label>
                     <select id="s3-action" onchange="calculate()">
-                        <option value="BUY">🛒 購買 (Buy)</option>
-                        <option value="CONVERT">🔄 轉換 (Convert)</option>
                         <option value="SELL" selected>💰 販售 (Sell)</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>平台</label>
                     <select id="s3-market" onchange="calculate()">
-                        <option value="PNIX">PNIX 端</option>
                         <option value="MARKET" selected>遊戲內交易所</option>
                     </select>
                 </div>
@@ -367,20 +365,20 @@
 
         <!-- 步驟 4 -->
         <div class="step-card">
-            <div class="step-header"><span>步驟 4：交易所購入第二樣商品</span></div>
+            <div class="step-header">
+                <span>步驟 4：交易所購入第二樣商品</span>
+                <span id="s4-sub" class="step-subtotal">可購入數量：0 個</span>
+            </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>動作</label>
                     <select id="s4-action" onchange="calculate()">
                         <option value="BUY" selected>🛒 購買 (Buy)</option>
-                        <option value="CONVERT">🔄 轉換 (Convert)</option>
-                        <option value="SELL">💰 販售 (Sell)</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>平台</label>
                     <select id="s4-market" onchange="calculate()">
-                        <option value="PNIX">PNIX 端</option>
                         <option value="MARKET" selected>遊戲內交易所</option>
                     </select>
                 </div>
@@ -413,20 +411,20 @@
 
         <!-- 步驟 5 -->
         <div class="step-card">
-            <div class="step-header"><span>步驟 5：再次轉換 (鑄造)</span></div>
+            <div class="step-header">
+                <span>步驟 5：再次轉換 (鑄造)</span>
+                <span id="s5-sub" class="step-subtotal">轉換後產出：0 個</span>
+            </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>動作</label>
                     <select id="s5-action" onchange="calculate()">
-                        <option value="BUY">🛒 購買 (Buy)</option>
                         <option value="CONVERT" selected>🔄 轉換 (Convert)</option>
-                        <option value="SELL">💰 販售 (Sell)</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>平台</label>
                     <select id="s5-market" onchange="calculate()">
-                        <option value="PNIX">PNIX 端</option>
                         <option value="MARKET" selected>遊戲內</option>
                     </select>
                 </div>
@@ -436,7 +434,7 @@
                     <label>商品</label>
                     <div class="select-container">
                         <img id="s5-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-morion.webp" alt="icon">
-                        <select id="s5-item" onchange="updateStepIcon(5)">
+                        <select id="s5-item" onchange="onStepItemChange(5)">
                             <option value="MORION" selected>MORION 墨水晶</option>
                             <option value="TEAR">TEAR 冰凍之淚</option>
                             <option value="ESSENCE">ESSENCE 詛咒精華</option>
@@ -451,9 +449,9 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>轉換比例 / 固大手續費</label>
+                    <label>轉換比例 (幾顆換1個) / 手續費</label>
                     <div class="form-row" style="gap:6px;">
-                        <input type="number" id="s5-price" value="10" placeholder="比例" oninput="calculate()">
+                        <input type="number" id="s5-ratio" value="10" placeholder="比例" oninput="calculate()">
                         <input type="number" id="s5-fee" value="1" placeholder="扣鑽" oninput="calculate()">
                     </div>
                 </div>
@@ -462,13 +460,14 @@
 
         <!-- 步驟 6 -->
         <div class="step-card">
-            <div class="step-header"><span>步驟 6：PNIX 最終售出變現</span></div>
+            <div class="step-header">
+                <span>步驟 6：PNIX 最終售出變現</span>
+                <span id="s6-sub" class="step-subtotal">實得 CROW：0 CROW</span>
+            </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>動作</label>
                     <select id="s6-action" onchange="calculate()">
-                        <option value="BUY">🛒 購買 (Buy)</option>
-                        <option value="CONVERT">🔄 轉換 (Convert)</option>
                         <option value="SELL" selected>💰 販售 (Sell)</option>
                     </select>
                 </div>
@@ -476,7 +475,6 @@
                     <label>平台</label>
                     <select id="s6-market" onchange="calculate()">
                         <option value="PNIX" selected>PNIX 端</option>
-                        <option value="MARKET">遊戲內交易所</option>
                     </select>
                 </div>
             </div>
@@ -511,7 +509,7 @@
     <div class="card result-box">
         <h2>📊 6步驟流轉計算結果</h2>
         <div class="result-item">
-            <span>初始總花費成本：</span>
+            <span>初始總花費成本 (含買進手續費)：</span>
             <span id="res-cost-crow">0.000 CROW</span>
         </div>
         <div class="result-item">
@@ -519,7 +517,7 @@
             <span id="res-token-qty">0.00 個</span>
         </div>
         <div class="result-item">
-            <span>最終變現實得 CROW：</span>
+            <span>最終變現實得 CROW (含賣出手續費)：</span>
             <span id="res-get-crow">0.000 CROW</span>
         </div>
         
@@ -575,45 +573,70 @@
         }
     }
 
+    // 當步驟 2 或 5 選擇商品時，自動帶出轉換規則
+    function onStepItemChange(step) {
+        updateStepIcon(step);
+        const item = document.getElementById(`s${step}-item`).value;
+        const ratioInput = document.getElementById(`s${step}-ratio`);
+        const feeInput = document.getElementById(`s${step}-fee`);
+
+        if (item === 'MORION') {
+            ratioInput.value = 10; // 10顆換1個
+            feeInput.value = 1;    // 1鑽手續費
+        } else {
+            ratioInput.value = 1;  // 其他商品 1:1
+            feeInput.value = 1;    // 1鑽手續費
+        }
+        calculate();
+    }
+
     function calculate() {
         const takerFee = parseFloat(document.getElementById('taker-fee').value) || 0.06;
         const makerFee = parseFloat(document.getElementById('maker-fee').value) || 0.04;
         const marketFee = parseFloat(document.getElementById('market-fee').value) || 0.05;
 
-        // 模擬 6 步驟流水計算
-        // 步驟 1 買進
+        // 步驟 1：買進
         const s1Price = parseFloat(document.getElementById('s1-price').value) || 0;
         const s1Qty = parseFloat(document.getElementById('s1-qty').value) || 0;
         const s1Market = document.getElementById('s1-market').value;
         const s1FeeRate = (s1Market === 'PNIX') ? takerFee : marketFee;
         const totalCostCrow = s1Price * s1Qty * (1 + s1FeeRate);
+        const s1BuyFeeOnly = s1Price * s1Qty * s1FeeRate;
+        document.getElementById('s1-sub').innerText = `花費: ${totalCostCrow.toFixed(3)} CROW (含手續費 ${s1BuyFeeOnly.toFixed(3)})`;
 
-        // 步驟 2 轉換
-        const s2Ratio = parseFloat(document.getElementById('s2-price').value) || 1;
+        // 步驟 2：轉換 1
+        const s2Ratio = parseFloat(document.getElementById('s2-ratio').value) || 1;
         const s2Fee = parseFloat(document.getElementById('s2-fee').value) || 0;
-        let currentAmount = s2Ratio > 0 ? s1Qty / s2Ratio - s2Fee : s1Qty;
+        let amountAfterS2 = s2Ratio > 0 ? s1Qty / s2Ratio - s2Fee : s1Qty;
+        if(amountAfterS2 < 0) amountAfterS2 = 0;
+        document.getElementById('s2-sub').innerText = `轉換產出: ${amountAfterS2.toFixed(2)} 個`;
 
-        // 步驟 3 販售
+        // 步驟 3：交易所販售
         const s3Price = parseFloat(document.getElementById('s3-price').value) || 0;
         const s3Market = document.getElementById('s3-market').value;
         const s3FeeRate = (s3Market === 'PNIX') ? makerFee : marketFee;
-        let currentDiamonds = currentAmount * s3Price * (1 - s3FeeRate);
+        let diamondsAfterS3 = amountAfterS2 * s3Price * (1 - s3FeeRate);
+        document.getElementById('s3-sub').innerText = `獲得鑽石: ${diamondsAfterS3.toFixed(2)} 鑽`;
 
-        // 步驟 4 購買第二樣
+        // 步驟 4：購入第二樣商品
         const s4Price = parseFloat(document.getElementById('s4-price').value) || 1;
-        let secondItemQty = s4Price > 0 ? currentDiamonds / s4Price : 0;
+        let s4Qty = s4Price > 0 ? diamondsAfterS3 / s4Price : 0;
+        document.getElementById('s4-sub').innerText = `可購入數量: ${s4Qty.toFixed(2)} 個`;
 
-        // 步驟 5 再次轉換
-        const s5Ratio = parseFloat(document.getElementById('s5-price').value) || 1;
+        // 步驟 5：再次轉換
+        const s5Ratio = parseFloat(document.getElementById('s5-ratio').value) || 1;
         const s5Fee = parseFloat(document.getElementById('s5-fee').value) || 0;
-        let finalTokens = s5Ratio > 0 ? secondItemQty / s5Ratio - s5Fee : secondItemQty;
+        let finalTokens = s5Ratio > 0 ? s4Qty / s5Ratio - s5Fee : s4Qty;
+        if(finalTokens < 0) finalTokens = 0;
+        document.getElementById('s5-sub').innerText = `轉換產出: ${finalTokens.toFixed(2)} 個`;
 
-        // 步驟 6 PNIX 售出
+        // 步驟 6：PNIX 售出變現
         const s6Price = parseFloat(document.getElementById('s6-price').value) || 0;
         const getCrow = finalTokens * s6Price * (1 - makerFee);
         const profitCrow = getCrow - totalCostCrow;
+        document.getElementById('s6-sub').innerText = `實得 CROW: ${getCrow.toFixed(3)} CROW`;
 
-        // 畫面更新
+        // 總結果更新
         document.getElementById('res-cost-crow').innerText = totalCostCrow.toFixed(3) + ' CROW';
         document.getElementById('res-token-qty').innerText = finalTokens.toFixed(2) + ' 個';
         document.getElementById('res-get-crow').innerText = getCrow.toFixed(3) + ' CROW';
