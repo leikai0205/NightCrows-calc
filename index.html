@@ -266,7 +266,7 @@
             </div>
         </div>
 
-        <!-- 步驟 2 (已刪除手續費欄位) -->
+        <!-- 步驟 2 -->
         <div class="step-card">
             <div class="step-header">
                 <span>步驟 2：遊戲內轉換/處理</span>
@@ -392,7 +392,7 @@
             </div>
         </div>
 
-        <!-- 步驟 5 (手續費自動連動產出數量) -->
+        <!-- 步驟 5 (手續費欄位移除，自動對應產出數量顯示鑽數) -->
         <div class="step-card">
             <div class="step-header">
                 <span>步驟 5：再次轉換 (鑄造)</span>
@@ -428,11 +428,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>轉換比例 (幾顆換1個) / 手續費 (自動連動)</label>
-                    <div class="form-row" style="gap:6px;">
-                        <input type="number" id="s5-ratio" value="10" placeholder="比例" oninput="calculate()">
-                        <input type="number" id="s5-fee" placeholder="手續費" readonly style="background-color: #111827; color: var(--success); cursor: not-allowed;">
-                    </div>
+                    <label>轉換比例 (幾顆換1個)</label>
+                    <input type="number" id="s5-ratio" value="10" placeholder="比例" oninput="calculate()">
                 </div>
             </div>
         </div>
@@ -553,14 +550,14 @@
         const item = document.getElementById(`s${step}-item`).value;
         const ratioInput = document.getElementById(`s${step}-ratio`);
 
-        if (step === 2) {
-            ratioInput.value = 1; // 步驟2預設 1:1
-        } else if (step === 5) {
+        if (step === 5) {
             if (item === 'MORION') {
                 ratioInput.value = 10; // 10顆換1個
             } else {
                 ratioInput.value = 1;  
             }
+        } else {
+            ratioInput.value = 1;
         }
         calculate();
     }
@@ -579,7 +576,7 @@
         const s1BuyFeeOnly = s1Price * s1Qty * s1FeeRate;
         document.getElementById('s1-sub').innerText = `花費: ${totalCostCrow.toFixed(3)} CROW (含手續費 ${s1BuyFeeOnly.toFixed(3)})`;
 
-        // 步驟 2：轉換 1 (無手續費)
+        // 步驟 2：轉換 1
         const s2Ratio = parseFloat(document.getElementById('s2-ratio').value) || 1;
         let amountAfterS2 = s2Ratio > 0 ? Math.floor(s1Qty / s2Ratio) : s1Qty;
         document.getElementById('s2-sub').innerText = `轉換產出: ${amountAfterS2} 個`;
@@ -594,14 +591,11 @@
         let s4Qty = s4Price > 0 ? Math.floor(diamondsAfterS3 / s4Price) : 0;
         document.getElementById('s4-sub').innerText = `可購入數量: ${s4Qty} 個`;
 
-        // 步驟 5：再次轉換 (手續費自動連動產出數量)
+        // 步驟 5：再次轉換 (產出幾個，手續費就直接顯示幾鑽)
         const s5Ratio = parseFloat(document.getElementById('s5-ratio').value) || 1;
         let finalTokens = s5Ratio > 0 ? Math.floor(s4Qty / s5Ratio) : s4Qty;
         if(finalTokens < 0) finalTokens = 0;
-        
-        // 自動將步驟 5 手續費欄位填入與產出相同的數值（例如 63 個 / 63 鑽）
-        document.getElementById('s5-fee').value = finalTokens;
-        document.getElementById('s5-sub').innerText = `轉換產出: ${finalTokens} 個 (手續費連動: ${finalTokens})`;
+        document.getElementById('s5-sub').innerText = `轉換產出: ${finalTokens} 個 (手續費: ${finalTokens} 鑽)`;
 
         // 步驟 6：PNIX 售出變現
         const s6Price = parseFloat(document.getElementById('s6-price').value) || 0;
