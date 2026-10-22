@@ -354,7 +354,7 @@
                     <label>單價 / 數量設定</label>
                     <div class="form-row" style="gap:6px;">
                         <input type="number" id="s1-price" value="0.04" step="0.001" placeholder="單價" oninput="calculate()">
-                        <input type="number" id="s1-qty" value="245" placeholder="數量" oninput="calculate()">
+                        <input type="number" id="s1-qty" value="44" placeholder="數量" oninput="calculate()">
                     </div>
                 </div>
             </div>
@@ -385,8 +385,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>轉換比例 (幾顆換1個)</label>
-                    <input type="number" id="s2-ratio" value="1" placeholder="比例" oninput="calculate()">
+                    <label>轉換倍率 (1個代幣換幾顆道具)</label>
+                    <input type="number" id="s2-ratio" value="10" placeholder="倍率" oninput="calculate()">
                 </div>
             </div>
         </div>
@@ -568,7 +568,7 @@
         { id: "FEATHER", name: "FEATHER 蒼天碎片", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-feather.webp", defaultBuy: 0.04, defaultSell: 8.0, defaultBuy2: 1.8, defaultPnix: 0.1 },
         { id: "PROMOTE", name: "PROMOTE 優級轉職信物", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-promote.webp", defaultBuy: 0.04, defaultSell: 8.0, defaultBuy2: 1.8, defaultPnix: 0.1 },
         { id: "GEAR", name: "GEAR 超精密飛行零件", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-gear.webp", defaultBuy: 0.04, defaultSell: 8.0, defaultBuy2: 1.8, defaultPnix: 0.1 },
-        { id: "RAVN", name: "RAVN RAVIUM", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-ravn.webp", defaultBuy: 0.04, defaultSell: 8.0, defaultBuy2: 1.8, defaultPnix: 0.1 }
+        { id: "RAVN", name: "RAVN RAVIUM", icon: "https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-ravn.webp", defaultBuy: 0.04, defaultSell: 8.0, defaultSell2: 1.8, defaultPnix: 0.1 }
     ];
 
     function initUI() {
@@ -594,8 +594,9 @@
                 const opt = document.createElement('option');
                 opt.value = item.id;
                 opt.text = item.name;
-                if (i === 1 && item.id === 'TEAR') opt.selected = true;
-                if (i === 3 && item.id === 'TEAR') opt.selected = true;
+                if (i === 1 && item.id === 'MORION') opt.selected = true;
+                if (i === 2 && item.id === 'MORION') opt.selected = true;
+                if (i === 3 && item.id === 'MORION') opt.selected = true;
                 if (i === 4 && item.id === 'MORION') opt.selected = true;
                 if (i === 5 && item.id === 'MORION') opt.selected = true;
                 if (i === 6 && item.id === 'MORION') opt.selected = true;
@@ -627,12 +628,18 @@
         if (step === 1) {
             const p = document.getElementById(`p_buy_${item}`);
             if (p) document.getElementById('s1-price').value = p.value;
+            document.getElementById('s2-item').value = item;
+            updateStepIcon(2);
+            // 墨水晶預設倍率 10，其餘 1
+            document.getElementById('s2-ratio').value = (item === 'MORION') ? 10 : 1;
         } else if (step === 3) {
             const p = document.getElementById(`p_sell_${item}`);
             if (p) document.getElementById('s3-price').value = p.value;
         } else if (step === 4) {
             const p = document.getElementById(`p_buy2_${item}`);
             if (p) document.getElementById('s4-price').value = p.value;
+            document.getElementById('s5-item').value = item;
+            updateStepIcon(5);
             const ratioInput = document.getElementById('s5-ratio');
             if (item === 'MORION') ratioInput.value = 10;
             else ratioInput.value = 1;
@@ -668,7 +675,11 @@
                 if (qty <= 0) return;
                 const cost = buyP * qty * (1 + takerFee);
                 
-                const diamonds = Math.floor(qty * sellP * 0.95);
+                // 步驟2轉換 (墨水晶乘10，其餘乘1)
+                const s2Multiplier = (buyItem === 'MORION') ? 10 : 1;
+                const amountAfterS2 = qty * s2Multiplier;
+
+                const diamonds = Math.floor(amountAfterS2 * sellP * 0.95);
                 const s4Qty = Math.floor(diamonds / buy2P);
                 const ratio = (sellItem === 'MORION') ? 10 : 1;
                 const finalTokens = Math.floor(s4Qty / ratio);
@@ -684,19 +695,17 @@
 
         if (bestConfig) {
             document.getElementById('s1-item').value = bestConfig.buyItem;
-            onStepItemChange(1);
-            document.getElementById('s1-qty').value = bestConfig.qty;
-
+            document.getElementById('s2-item').value = bestConfig.buyItem;
             document.getElementById('s3-item').value = bestConfig.buyItem;
+            onStepItemChange(1);
             onStepItemChange(3);
+            document.getElementById('s1-qty').value = bestConfig.qty;
+            document.getElementById('s2-ratio').value = (bestConfig.buyItem === 'MORION') ? 10 : 1;
 
             document.getElementById('s4-item').value = bestConfig.sellItem;
-            onStepItemChange(4);
-
             document.getElementById('s5-item').value = bestConfig.sellItem;
-            onStepItemChange(5);
-
             document.getElementById('s6-item').value = bestConfig.sellItem;
+            onStepItemChange(4);
             onStepItemChange(6);
 
             calculate();
@@ -706,7 +715,7 @@
             const sellName = itemsData.find(i => i.id === bestConfig.sellItem).name;
 
             if (bestConfig.profit > 0) {
-                resDiv.innerHTML = `🟢 <b>最佳推薦組合</b>：買進 <b>${buyName}</b> ➔ 交易所賣出 ➔ 買入 <b>${sellName}</b> ➔ 轉換變現，預計可賺 <b>${bestConfig.profit.toFixed(3)} CROW</b>！已自動幫您帶入下方設定。`;
+                resDiv.innerHTML = `🟢 <b>最佳推薦組合</b>：買進 <b>${buyName}</b> ➔ 交易所賣出 ➔ 買入 <b>${sellName}</b> ➔ 轉換變現，預計可賺 <b>${bestConfig.profit.toFixed(3)} CROW</b>！已自動幫您帶入下方 1~6 步驟設定。`;
             } else {
                 resDiv.innerHTML = `🔴 <b>市場雷達提示</b>：目前價格下所有組合皆為虧損（最佳虧損 ${bestConfig.profit.toFixed(3)} CROW），建議微調行情價格。`;
             }
@@ -727,9 +736,9 @@
         const s1BuyFeeOnly = s1Price * s1Qty * s1FeeRate;
         document.getElementById('s1-sub').innerText = `花費: ${totalCostCrow.toFixed(3)} CROW (含手續費 ${s1BuyFeeOnly.toFixed(3)})`;
 
-        // 步驟 2：轉換 1
+        // 步驟 2：轉換 1 (改為相乘倍率：1個代幣換幾顆道具)
         const s2Ratio = parseFloat(document.getElementById('s2-ratio').value) || 1;
-        let amountAfterS2 = s2Ratio > 0 ? Math.floor(s1Qty / s2Ratio) : s1Qty;
+        let amountAfterS2 = Math.floor(s1Qty * s2Ratio);
         document.getElementById('s2-sub').innerText = `轉換產出: ${amountAfterS2} 個`;
 
         // 步驟 3：交易所販售
