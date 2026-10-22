@@ -434,7 +434,7 @@
                     <label>轉換比例 (幾顆換1個) / 手續費</label>
                     <div class="form-row" style="gap:6px;">
                         <input type="number" id="s5-ratio" value="10" placeholder="比例" oninput="calculate()">
-                        <input type="number" id="s5-fee" value="1" placeholder="扣鑽" oninput="calculate()">
+                        <input type="number" id="s5-fee" value="1" placeholder="扣鑽/扣幣" oninput="calculate()">
                     </div>
                 </div>
             </div>
@@ -560,7 +560,7 @@
 
         if (item === 'MORION') {
             ratioInput.value = 10; // 10顆換1個
-            feeInput.value = 1;    // 1鑽手續費
+            feeInput.value = 1;    // 1個幣手續費
         } else {
             ratioInput.value = 1;  // 其他商品 1:1
             feeInput.value = 0;    // 其他轉化預設0
@@ -582,31 +582,31 @@
         const s1BuyFeeOnly = s1Price * s1Qty * s1FeeRate;
         document.getElementById('s1-sub').innerText = `花費: ${totalCostCrow.toFixed(3)} CROW (含手續費 ${s1BuyFeeOnly.toFixed(3)})`;
 
-        // 步驟 2：轉換 1 (傳入步驟 1 的整數數量，產出無條件捨去取整)
+        // 步驟 2：轉換 1
         const s2Ratio = parseFloat(document.getElementById('s2-ratio').value) || 1;
         const s2Fee = parseFloat(document.getElementById('s2-fee').value) || 0;
         let amountAfterS2 = s2Ratio > 0 ? Math.floor(s1Qty / s2Ratio) - s2Fee : s1Qty;
         if(amountAfterS2 < 0) amountAfterS2 = 0;
         document.getElementById('s2-sub').innerText = `轉換產出: ${amountAfterS2} 個`;
 
-        // 步驟 3：交易所販售 (傳入步驟 2 產出的整數，獲得鑽石無條件捨去取整)
+        // 步驟 3：交易所販售
         const s3Price = parseFloat(document.getElementById('s3-price').value) || 0;
         let diamondsAfterS3 = Math.floor(amountAfterS2 * s3Price * (1 - marketFee));
         document.getElementById('s3-sub').innerText = `獲得鑽石: ${diamondsAfterS3} 鑽`;
 
-        // 步驟 4：購入第二樣商品 (傳入步驟 3 獲得的整數鑽石，可購入數量無條件捨去取整)
+        // 步驟 4：購入第二樣商品
         const s4Price = parseFloat(document.getElementById('s4-price').value) || 1;
         let s4Qty = s4Price > 0 ? Math.floor(diamondsAfterS3 / s4Price) : 0;
         document.getElementById('s4-sub').innerText = `可購入數量: ${s4Qty} 個`;
 
-        // 步驟 5：再次轉換 (傳入步驟 4 購入的整數數量，產出無條件捨去取整)
+        // 步驟 5：再次轉換 (修正：無條件捨去取整除法後，再減去手續費，精確對應 604 墨水晶 -> 60 幣 - 1 手續費 = 59 幣)
         const s5Ratio = parseFloat(document.getElementById('s5-ratio').value) || 1;
         const s5Fee = parseFloat(document.getElementById('s5-fee').value) || 0;
         let finalTokens = s5Ratio > 0 ? Math.floor(s4Qty / s5Ratio) - s5Fee : s4Qty;
         if(finalTokens < 0) finalTokens = 0;
         document.getElementById('s5-sub').innerText = `轉換產出: ${finalTokens} 個`;
 
-        // 步驟 6：PNIX 售出變現 (傳入步驟 5 產出的整數代幣)
+        // 步驟 6：PNIX 售出變現
         const s6Price = parseFloat(document.getElementById('s6-price').value) || 0;
         const getCrow = finalTokens * s6Price * (1 - makerFee);
         const profitCrow = getCrow - totalCostCrow;
