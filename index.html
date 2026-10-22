@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>夜鴉搬磚套利計算器</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #121212; color: #e0e0e0; padding: 20px; }
+        .container { max-width: 750px; margin: auto; background: #1e1e1e; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
+        h1 { color: #f39c12; text-align: center; font-size: 22px; margin-bottom: 25px; }
+        .section-title { font-size: 16px; color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 6px; margin-top: 20px; margin-bottom: 15px; font-weight: bold; }
+        .form-group { margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; background: #252525; padding: 10px 15px; border-radius: 8px; }
+        label { font-size: 14px; color: #ccc; }
+        input, select { background: #2a2a2a; color: #fff; border: 1px solid #444; padding: 8px; width: 150px; text-align: center; border-radius: 6px; font-size: 14px; }
+        .result-box { background: #2a2a2a; border-left: 5px solid #f39c12; padding: 15px; border-radius: 8px; margin-top: 20px; }
+        .result-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 15px; }
+        .profit { color: #2ecc71; font-weight: bold; }
+        .loss { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🦅 夜鴉 (NIGHT CROWS) 搬磚套利計算器</h1>
+    
+    <div class="section-title">1️⃣ 基礎參數設定</div>
+    <div class="form-group">
+        <label>PNIX 買進手續費 (吃單 Taker)</label>
+        <input type="number" id="takerFee" value="0.06" step="0.01" oninput="calculate()">
+    </div>
+    <div class="form-group">
+        <label>PNIX 賣出手續費 (掛單 Maker)</label>
+        <input type="number" id="makerFee" value="0.04" step="0.01" oninput="calculate()">
+    </div>
+    <div class="form-group">
+        <label>遊戲內交易所手續費</label>
+        <input type="number" id="gameFee" value="0.05" step="0.01" oninput="calculate()">
+    </div>
+
+    <div class="section-title">2️⃣ 選擇商品與價格輸入</div>
+    <div class="form-group">
+        <label>選擇商品</label>
+        <select id="itemSelect" onchange="updateItemName()">
+            <option value="MORION">MORION 墨水晶 (10顆 = 1幣)</option>
+            <option value="TEAR" selected>TEAR 冰凍之淚</option>
+            <option value="ESSENCE">ESSENCE 詛咒精華</option>
+            <option value="PAPYRUS">PAPYRUS 古代沙草紙</option>
+            <option value="ALLOY">ALLOY 古代匠人的合金</option>
+            <option value="FEATHER">FEATHER 蒼天碎片</option>
+            <option value="PROMOTE">PROMOTE 優級轉職信物</option>
+            <option value="GEAR">GEAR 超精密飛行零件</option>
+            <option value="RAVN">RAVN RAVIUM</option>
+            <option value="OTHER">其他（自訂商品）</option>
+        </select>
+    </div>
+    <div class="form-group" id="otherNameGroup" style="display:none;">
+        <label>自訂商品名稱</label>
+        <input type="text" id="customItemName" value="自訂商品" style="width: 150px;">
+    </div>
+    <div class="form-group">
+        <label>PNIX 買進價 (CROW)</label>
+        <input type="number" id="pnixBuyPrice" value="0.04" step="0.001" oninput="calculate()">
+    </div>
+    <div class="form-group">
+        <label>購買數量 (PNIX 端)</label>
+        <input type="number" id="buyAmount" value="111" step="1" oninput="calculate()">
+    </div>
+    <div class="form-group">
+        <label>世界交易所賣出價 (鑽石)</label>
+        <input type="number" id="gameSellPrice" value="9.0" step="0.1" oninput="calculate()">
+    </div>
+    <div class="form-group">
+        <label>遊戲內買進價 / 回收價 (鑽石)</label>
+        <input type="number" id="gameBuyPrice" value="1.57" step="0.01" oninput="calculate()">
+    </div>
+    <div class="form-group">
+        <label>遊戲內鑄造/上架固定扣鑽 (每幣扣幾鑽)</label>
+        <input type="number" id="craftFee" value="1" step="1" oninput="calculate()">
+    </div>
+    <div class="form-group">
+        <label>PNIX 賣出價 (CROW)</label>
+        <input type="number" id="pnixSellPrice" value="0.11" step="0.001" oninput="calculate()">
+    </div>
+
+    <div class="section-title">3️⃣ 計算結果</div>
+    <div class="result-box">
+        <div class="result-row">
+            <span>實際花費 CROW (含買進手續費)：</span>
+            <span id="resCost">0.00</span>
+        </div>
+        <div class="result-row">
+            <span>遊戲換回的代幣數量 (已扣固定鑄造費)：</span>
+            <span id="resTokens">0.00</span>
+        </div>
+        <div class="result-row">
+            <span>賣回 PNIX 實得 CROW (含賣出手續費)：</span>
+            <span id="resRevenue">0.00</span>
+        </div>
+        <div class="result-row" style="margin-top: 12px; border-top: 1px solid #444; padding-top: 10px; font-size: 17px;">
+            <span>最終淨利與狀態：</span>
+            <span id="resProfit" class="profit">計算中...</span>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateItemName() {
+    let select = document.getElementById('itemSelect');
+    let otherGroup = document.getElementById('otherNameGroup');
+    if(select.value === 'OTHER') {
+        otherGroup.style.display = 'flex';
+    } else {
+        otherGroup.style.display = 'none';
+    }
+}
+
+function calculate() {
+    let takerFee = parseFloat(document.getElementById('takerFee').value) || 0;
+    let makerFee = parseFloat(document.getElementById('makerFee').value) || 0;
+    let gameFee = parseFloat(document.getElementById('gameFee').value) || 0;
+    
+    let pnixBuy = parseFloat(document.getElementById('pnixBuyPrice').value) || 0;
+    let amount = parseFloat(document.getElementById('buyAmount').value) || 0;
+    let gameSell = parseFloat(document.getElementById('gameSellPrice').value) || 0;
+    let gameBuy = parseFloat(document.getElementById('gameBuyPrice').value) || 0;
+    let craftFeePerCoin = parseFloat(document.getElementById('craftFee').value) || 0;
+    let pnixSell = parseFloat(document.getElementById('pnixSellPrice').value) || 0;
+
+    // 1. 花費 CROW (PNIX 買進 + 吃單手續費)
+    let rawCost = pnixBuy * amount;
+    let totalCostCROW = rawCost * (1 + takerFee);
+
+    // 2. 遊戲內賣出換鑽 (假設你買的道具數量直接在遊戲內換成總鑽石)
+    // 這裡把 gameSellPrice 當作「全部賣掉總共拿到的鑽石」或單價，我們以總鑽石來計算較直覺
+    let totalDiamonds = gameSell * (1 - gameFee);
+
+    // 3. 用鑽石買材料或換回代幣，假設換算成目標代幣的數量
+    // 例如拿鑽石買墨水晶，再除以 10 變成墨水晶幣
+    let targetMaterialsCount = totalDiamonds / gameBuy; 
+    let coinCount = targetMaterialsCount / 10; // 假設 10 顆換 1 個幣 (可依需求調整)
+    
+    // 扣除鑄造費 (每個幣扣固定鑽石，這裡簡化為直接從數量或換算扣除，此處以幣數量 * 固定費)
+    let totalCraftFeeDiamonds = coinCount * craftFeePerCoin;
+    let finalCoins = Math.max(0, coinCount - (totalCraftFeeDiamonds / gameBuy / 10)); // 簡易折算
+
+    // 4. 回到 PNIX 賣出換 CROW (掛單 Maker 費)
+    let rawRevenue = finalCoins * pnixSell;
+    let totalRevenueCROW = rawRevenue * (1 - makerFee);
+
+    let netProfit = totalRevenueCROW - totalCostCROW;
+
+    // 顯示結果
+    document.getElementById('resCost').innerText = totalCostCROW.toFixed(3) + " CROW";
+    document.getElementById('resTokens').innerText = finalCoins.toFixed(2) + " 個";
+    document.getElementById('resRevenue').innerText = totalRevenueCROW.toFixed(3) + " CROW";
+
+    let profitEl = document.getElementById('resProfit');
+    if (netProfit > 0) {
+        profitEl.className = "profit";
+        profitEl.innerText = "🟢 賺 " + netProfit.toFixed(3) + " CROW (可以衝！)";
+    } else {
+        profitEl.className = "loss";
+        profitEl.innerText = "🔴 賠 " + Math.abs(netProfit).toFixed(3) + " CROW (會虧錢)";
+    }
+}
+
+calculate();
+</script>
+
+</body>
+</html>
