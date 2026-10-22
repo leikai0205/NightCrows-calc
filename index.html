@@ -28,7 +28,7 @@
 
         .container {
             width: 100%;
-            max-width: 650px;
+            max-width: 700px;
         }
 
         header {
@@ -74,7 +74,23 @@
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 16px;
+        }
+
+        .market-side {
+            background: rgba(11, 16, 23, 0.5);
+            border: 1px solid #1e293b;
+            padding: 14px;
+            border-radius: 10px;
+        }
+
+        .market-side h3 {
+            font-size: 0.95rem;
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: var(--accent-glow);
+            border-bottom: 1px dashed #2d3b54;
+            padding-bottom: 6px;
         }
 
         label {
@@ -85,7 +101,6 @@
             gap: 6px;
         }
 
-        /* 讓選單外觀更精緻 */
         .select-container {
             display: flex;
             align-items: center;
@@ -118,7 +133,6 @@
             width: 100%;
         }
 
-        /* 針對下拉選單展開時的選項進行深色美化 */
         select option {
             background-color: #161d2a;
             color: #f1f5f9;
@@ -191,80 +205,107 @@
         <h1>🦅 夜鴉 (NIGHT CROWS) 交易所計算器</h1>
     </header>
 
-    <!-- 商品選擇與價格設定 -->
+    <!-- 商品選擇與價格設定（左右分欄：買進 vs 販售） -->
     <div class="card">
-        <h2>📦 商品選擇與價格設定</h2>
+        <h2>📦 跨市場套利設定</h2>
         
         <div class="form-row">
-            <div class="form-group">
-                <label for="buy-item">🛒 購買商品 (PNIX 端)</label>
-                <div class="select-container">
-                    <img id="buy-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp" alt="icon">
-                    <select id="buy-item" onchange="updateIcon('buy')">
-                        <option value="MORION">MORION 墨水晶 (10顆 = 1幣)</option>
-                        <option value="TEAR" selected>TEAR 冰凍之淚</option>
-                        <option value="ESSENCE">ESSENCE 詛咒精華</option>
-                        <option value="PAPYRUS">PAPYRUS 古代沙草紙</option>
-                        <option value="ALLOY">ALLOY 古代匠人的合金</option>
-                        <option value="FEATHER">FEATHER 蒼天碎片</option>
-                        <option value="PROMOTE">PROMOTE 優級轉職信物</option>
-                        <option value="GEAR">GEAR 超精密飛行零件</option>
-                        <option value="RAVN">RAVN RAVIUM</option>
-                        <option value="CUSTOM">其他（自訂商品）</option>
+            <!-- 左側：購買設定 -->
+            <div class="market-side">
+                <h3>🛒 購買端設定</h3>
+                
+                <div class="form-group">
+                    <label for="buy-market">選擇購買平台</label>
+                    <select id="buy-market">
+                        <option value="PNIX" selected>PNIX 端</option>
+                        <option value="GAME">遊戲內交易所</option>
+                        <option value="WORLD">世界交易所</option>
                     </select>
                 </div>
+
+                <div class="form-group">
+                    <label for="buy-item">購買商品</label>
+                    <div class="select-container">
+                        <img id="buy-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-tear.webp" alt="icon">
+                        <select id="buy-item" onchange="updateIcon('buy')">
+                            <option value="MORION">MORION 墨水晶</option>
+                            <option value="TEAR" selected>TEAR 冰凍之淚</option>
+                            <option value="ESSENCE">ESSENCE 詛咒精華</option>
+                            <option value="PAPYRUS">PAPYRUS 古代沙草紙</option>
+                            <option value="ALLOY">ALLOY 古代匠人的合金</option>
+                            <option value="FEATHER">FEATHER 蒼天碎片</option>
+                            <option value="PROMOTE">PROMOTE 優級轉職信物</option>
+                            <option value="GEAR">GEAR 超精密飛行零件</option>
+                            <option value="RAVN">RAVN RAVIUM</option>
+                            <option value="CUSTOM">其他（自訂商品）</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="pnix-buy-price">買進單價 (CROW / 鑽石)</label>
+                    <input type="number" id="pnix-buy-price" value="0.04" step="0.001" oninput="calculate()">
+                </div>
+
+                <div class="form-group">
+                    <label for="buy-qty">購買數量</label>
+                    <input type="number" id="buy-qty" value="111" oninput="calculate()">
+                </div>
             </div>
-            
-            <div class="form-group">
-                <label for="sell-item">💰 販售商品 (世界交易所端)</label>
-                <div class="select-container">
-                    <img id="sell-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-morion.webp" alt="icon">
-                    <select id="sell-item" onchange="updateIcon('sell')">
-                        <option value="MORION" selected>MORION 墨水晶 (10顆 = 1幣)</option>
-                        <option value="TEAR">TEAR 冰凍之淚</option>
-                        <option value="ESSENCE">ESSENCE 詛咒精華</option>
-                        <option value="PAPYRUS">PAPYRUS 古代沙草紙</option>
-                        <option value="ALLOY">ALLOY 古代匠人的合金</option>
-                        <option value="FEATHER">FEATHER 蒼天碎片</option>
-                        <option value="PROMOTE">PROMOTE 優級轉職信物</option>
-                        <option value="GEAR">GEAR 超精密飛行零件</option>
-                        <option value="RAVN">RAVN RAVIUM</option>
-                        <option value="CUSTOM">其他（自訂商品）</option>
+
+            <!-- 右側：販售設定 -->
+            <div class="market-side">
+                <h3>💰 販售端設定</h3>
+                
+                <div class="form-group">
+                    <label for="sell-market">選擇販售平台</label>
+                    <select id="sell-market">
+                        <option value="PNIX">PNIX 端</option>
+                        <option value="GAME">遊戲內交易所</option>
+                        <option value="WORLD" selected>世界交易所</option>
                     </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="sell-item">販售商品</label>
+                    <div class="select-container">
+                        <img id="sell-icon" class="selected-icon" src="https://gcdn.wemade.games/prod/ncgl/official/2.8.6/_next/static/images/home/token-morion.webp" alt="icon">
+                        <select id="sell-item" onchange="updateIcon('sell')">
+                            <option value="MORION" selected>MORION 墨水晶</option>
+                            <option value="TEAR">TEAR 冰凍之淚</option>
+                            <option value="ESSENCE">ESSENCE 詛咒精華</option>
+                            <option value="PAPYRUS">PAPYRUS 古代沙草紙</option>
+                            <option value="ALLOY">ALLOY 古代匠人的合金</option>
+                            <option value="FEATHER">FEATHER 蒼天碎片</option>
+                            <option value="PROMOTE">PROMOTE 優級轉職信物</option>
+                            <option value="GEAR">GEAR 超精密飛行零件</option>
+                            <option value="RAVN">RAVN RAVIUM</option>
+                            <option value="CUSTOM">其他（自訂商品）</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="market-sell-price">販售單價 (鑽石 / CROW)</label>
+                    <input type="number" id="market-sell-price" value="9.0" step="0.1" oninput="calculate()">
+                </div>
+
+                <div class="form-group">
+                    <label for="pnix-sell-price">最終變現賣出價 (CROW)</label>
+                    <input type="number" id="pnix-sell-price" value="0.11" step="0.001" oninput="calculate()">
                 </div>
             </div>
         </div>
 
-        <div class="form-row">
+        <!-- 轉換過渡輔助參數 -->
+        <div style="margin-top: 16px; border-top: 1px solid var(--card-border); padding-top: 14px;" class="form-row">
             <div class="form-group">
-                <label for="pnix-buy-price">PNIX 買進價 (CROW)</label>
-                <input type="number" id="pnix-buy-price" value="0.04" step="0.001" oninput="calculate()">
-            </div>
-            <div class="form-group">
-                <label for="buy-qty">購買數量 (PNIX 端)</label>
-                <input type="number" id="buy-qty" value="111" oninput="calculate()">
-            </div>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group">
-                <label for="market-sell-price">世界交易所賣出價 (鑽石)</label>
-                <input type="number" id="market-sell-price" value="9.0" step="0.1" oninput="calculate()">
-            </div>
-            <div class="form-group">
-                <label for="game-buy-price">遊戲內買進價 / 回收價 (鑽石)</label>
+                <label for="game-buy-price">遊戲內轉換/回收價 (例如換成墨水晶比值)</label>
                 <input type="number" id="game-buy-price" value="1.57" step="0.01" oninput="calculate()">
             </div>
-        </div>
-
-        <div class="form-row">
             <div class="form-group">
                 <label for="game-fixed-fee">遊戲內鑄造/上架固定扣鑽 (每幣)</label>
                 <input type="number" id="game-fixed-fee" value="1" oninput="calculate()">
-            </div>
-            <div class="form-group">
-                <label for="pnix-sell-price">PNIX 賣出價 (CROW)</label>
-                <input type="number" id="pnix-sell-price" value="0.11" step="0.001" oninput="calculate()">
             </div>
         </div>
     </div>
@@ -273,15 +314,15 @@
     <div class="card result-box">
         <h2>📊 計算結果分析</h2>
         <div class="result-item">
-            <span>實際花費 CROW (含買進手續費)：</span>
+            <span>實際花費成本 (含買進手續費)：</span>
             <span id="res-cost-crow">0.000 CROW</span>
         </div>
         <div class="result-item">
-            <span>遊戲換回的代幣數量 (已扣固定鑄造費)：</span>
+            <span>遊戲中轉換/換回的數量：</span>
             <span id="res-token-qty">0.00 個</span>
         </div>
         <div class="result-item">
-            <span>賣回 PNIX 實得 CROW (含賣出手續費)：</span>
+            <span>最終實得 CROW (含賣出手續費)：</span>
             <span id="res-get-crow">0.000 CROW</span>
         </div>
         
@@ -290,7 +331,7 @@
         </div>
     </div>
 
-    <!-- 基礎參數設定（移至最下方） -->
+    <!-- 基礎參數設定（維持在最下方） -->
     <div class="card params-section">
         <h2>⚙️ 基礎參數設定 (長期固定)</h2>
         <div class="form-row">
