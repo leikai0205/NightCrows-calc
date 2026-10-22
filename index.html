@@ -434,7 +434,7 @@
                     <label>轉換比例 (幾顆換1個) / 手續費 (總扣鑽)</label>
                     <div class="form-row" style="gap:6px;">
                         <input type="number" id="s5-ratio" value="10" placeholder="比例" oninput="calculate()">
-                        <input type="number" id="s5-fee" value="60" placeholder="總手續費" oninput="calculate()">
+                        <input type="number" id="s5-fee" value="60" placeholder="手續費記錄" oninput="calculate()">
                     </div>
                 </div>
             </div>
@@ -551,7 +551,6 @@
         }
     }
 
-    // 當步驟 2 或 5 選擇商品時，自動帶出轉換規則
     function onStepItemChange(step) {
         updateStepIcon(step);
         const item = document.getElementById(`s${step}-item`).value;
@@ -560,8 +559,8 @@
 
         if (step === 5) {
             if (item === 'MORION') {
-                ratioInput.value = 10; // 10顆換1個
-                feeInput.value = 60;   // 預設 60 總扣除數
+                ratioInput.value = 10;
+                feeInput.value = 60;   
             } else {
                 ratioInput.value = 1;  
                 feeInput.value = 0;    
@@ -609,12 +608,12 @@
         let s4Qty = s4Price > 0 ? Math.floor(diamondsAfterS3 / s4Price) : 0;
         document.getElementById('s4-sub').innerText = `可購入數量: ${s4Qty} 個`;
 
-        // 步驟 5：再次轉換（直接以整數除法算出理論產出，再扣除指定的總手續費/消耗量）
+        // 步驟 5：再次轉換（修正：直接以整數除法算出產出 60 個，手續費僅作為顯示備註）
         const s5Ratio = parseFloat(document.getElementById('s5-ratio').value) || 1;
         const s5Fee = parseFloat(document.getElementById('s5-fee').value) || 0;
-        let finalTokens = s5Ratio > 0 ? Math.floor(s4Qty / s5Ratio) - s5Fee : s4Qty;
+        let finalTokens = s5Ratio > 0 ? Math.floor(s4Qty / s5Ratio) : s4Qty;
         if(finalTokens < 0) finalTokens = 0;
-        document.getElementById('s5-sub').innerText = `轉換產出: ${finalTokens} 個 (手續費扣 ${s5Fee})`;
+        document.getElementById('s5-sub').innerText = `轉換產出: ${finalTokens} 個 (手續費標示: ${s5Fee})`;
 
         // 步驟 6：PNIX 售出變現
         const s6Price = parseFloat(document.getElementById('s6-price').value) || 0;
@@ -641,7 +640,6 @@
     for(let i=1; i<=6; i++) {
         updateStepIcon(i);
     }
-    // 設定步驟 5 預設手續費為 60
     document.getElementById('s5-fee').value = 60;
     calculate();
 </script>
