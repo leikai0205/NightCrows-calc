@@ -159,6 +159,23 @@
             border-color: var(--accent-glow);
         }
 
+        .recommend-box {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(15, 20, 28, 0.8));
+            border: 1px solid #38bdf8;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 20px;
+        }
+
+        .recommend-box h3 {
+            margin-top: 0;
+            color: var(--accent-glow);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
         .result-box {
             background: linear-gradient(135deg, #1b263b 0%, #111827 100%);
             border: 1px solid #334155;
@@ -214,6 +231,24 @@
         <h1>🦅 夜鴉 (NIGHT CROWS) 交易所計算器</h1>
     </header>
 
+    <!-- 💡 智慧資產與行情看板 -->
+    <div class="card recommend-box">
+        <h3>💡 資產與套利行情雷達</h3>
+        <div class="form-row">
+            <div class="form-group">
+                <label>目前可用 CROW 資本</label>
+                <input type="number" id="user-crow-budget" value="5.0" step="0.1" placeholder="輸入 CROW 預算" oninput="autoSuggest()">
+            </div>
+            <div class="form-group">
+                <label>目標：智慧推薦最佳套利商品</label>
+                <button type="button" onclick="autoSuggest()" style="background:var(--accent-glow); color:#000; font-weight:bold; border:none; border-radius:8px; padding:10px; cursor:pointer;">⚡ 一鍵分析最佳賺錢組合</button>
+            </div>
+        </div>
+        <div id="recommend-result" style="font-size: 0.85rem; color: #cbd5e1; margin-top: 8px;">
+            點擊上方按鈕或調整設定，系統將自動為您評估目前最賺錢的商品路徑！
+        </div>
+    </div>
+
     <!-- 6步驟連續套利設定 -->
     <div class="card">
         <h2>🔄 6步驟連續套利流程設定</h2>
@@ -260,7 +295,7 @@
                     <label>單價 / 數量設定</label>
                     <div class="form-row" style="gap:6px;">
                         <input type="number" id="s1-price" value="0.04" step="0.001" placeholder="單價" oninput="calculate()">
-                        <input type="number" id="s1-qty" value="111" placeholder="數量" oninput="calculate()">
+                        <input type="number" id="s1-qty" value="120" placeholder="數量" oninput="calculate()">
                     </div>
                 </div>
             </div>
@@ -345,7 +380,7 @@
                 </div>
                 <div class="form-group">
                     <label>販售單價 (鑽石)</label>
-                    <input type="number" id="s3-price" value="9.0" step="0.1" oninput="calculate()">
+                    <input type="number" id="s3-price" value="8.0" step="0.1" oninput="calculate()">
                 </div>
             </div>
         </div>
@@ -387,12 +422,12 @@
                 </div>
                 <div class="form-group">
                     <label>購入單價 (鑽石)</label>
-                    <input type="number" id="s4-price" value="1.57" step="0.01" oninput="calculate()">
+                    <input type="number" id="s4-price" value="1.8" step="0.01" oninput="calculate()">
                 </div>
             </div>
         </div>
 
-        <!-- 步驟 5 (手續費欄位移除，自動對應產出數量顯示鑽數) -->
+        <!-- 步驟 5 -->
         <div class="step-card">
             <div class="step-header">
                 <span>步驟 5：再次轉換 (鑄造)</span>
@@ -471,7 +506,7 @@
                 </div>
                 <div class="form-group">
                     <label>賣出單價 (CROW)</label>
-                    <input type="number" id="s6-price" value="0.11" step="0.001" oninput="calculate()">
+                    <input type="number" id="s6-price" value="0.1" step="0.001" oninput="calculate()">
                 </div>
             </div>
         </div>
@@ -552,7 +587,7 @@
 
         if (step === 5) {
             if (item === 'MORION') {
-                ratioInput.value = 10; // 10顆換1個
+                ratioInput.value = 10;
             } else {
                 ratioInput.value = 1;  
             }
@@ -560,6 +595,22 @@
             ratioInput.value = 1;
         }
         calculate();
+    }
+
+    function autoSuggest() {
+        const budget = parseFloat(document.getElementById('user-crow-budget').value) || 5.0;
+        const takerFee = parseFloat(document.getElementById('taker-fee').value) || 0.06;
+        
+        // 假設常用進場價 0.04，自動幫您換算最大可買數量
+        const suggestedQty = Math.floor(budget / (0.04 * (1 + takerFee)));
+        document.getElementById('s1-qty').value = suggestedQty > 0 ? suggestedQty : 1;
+
+        calculate();
+
+        const profitText = document.getElementById('res-get-crow').innerText;
+        document.getElementById('recommend-result').innerHTML = `
+            ✨ <b>智慧分析建議</b>：以您目前擁有 <b>${budget} CROW</b> 資本，步驟一建議進場採購約 <b>${suggestedQty} 個</b> 冰凍之淚。請參考下方 6 步驟詳細拆解與最終獲利預估！
+        `;
     }
 
     function calculate() {
@@ -591,11 +642,11 @@
         let s4Qty = s4Price > 0 ? Math.floor(diamondsAfterS3 / s4Price) : 0;
         document.getElementById('s4-sub').innerText = `可購入數量: ${s4Qty} 個`;
 
-        // 步驟 5：再次轉換 (產出幾個，手續費就直接顯示幾鑽)
+        // 步驟 5：再次轉換
         const s5Ratio = parseFloat(document.getElementById('s5-ratio').value) || 1;
         let finalTokens = s5Ratio > 0 ? Math.floor(s4Qty / s5Ratio) : s4Qty;
         if(finalTokens < 0) finalTokens = 0;
-        document.getElementById('s5-sub').innerText = `轉換產出: ${finalTokens} 個 (手續費: ${finalTokens} 鑽)`;
+        document.getElementById('s5-sub').innerText = `轉換產出: ${finalTokens} 個`;
 
         // 步驟 6：PNIX 售出變現
         const s6Price = parseFloat(document.getElementById('s6-price').value) || 0;
